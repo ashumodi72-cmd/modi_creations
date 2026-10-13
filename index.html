@@ -560,6 +560,13 @@
         const STORY_SEGMENTS = [[0, 0.17], [0.17, 0.37], [0.37, 0.52], [0.52, 0.85], [0.85, 1.0]];
         const GALLERY_MOTION = [0.575, 0.80];
 
+        // Autoplay: with no clicks, taps, wheel, scroll or keys, the page walks itself through
+        // the chapters, holding each one for 8 seconds once it is on screen
+        const AUTOPLAY_DWELL = 8;
+        const AUTOPLAY_ORDER = ['slide-1', 'slide-2', 'slide-3', 'slide-5', 'slide-4'];
+        const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const autoplay = { on: !REDUCED_MOTION, index: 0, timer: 0, idle: 0 };
+
         // ---------------------------------------------------------------
         // Bird ring photo turntable
         // ---------------------------------------------------------------
@@ -1040,9 +1047,57 @@
         // ---------------------------------------------------------------
         // Navigation: smooth scroll to each chapter
         // ---------------------------------------------------------------
-        function scrollToProgress(progress) {
+        function scrollToProgress(progress, behavior = 'smooth') {
             const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            window.scrollTo({ top: maxScroll * progress, behavior: 'smooth' });
+            window.scrollTo({ top: maxScroll * progress, behavior });
+        }
+
+        // ---------------------------------------------------------------
+        // Autoplay through the chapters
+        // ---------------------------------------------------------------
+        // Jumps are instant on purpose: the smoothed scroll (currentScroll) already glides the
+        // scene and text to each chapter.
+        function pauseAutoplay() {
+            autoplay.on = false;
+            autoplay.idle = 0;
+        }
+
+        function updateAutoplay(dt, scroll) {
+            if (!autoplay.on) {
+                if (REDUCED_MOTION) return;
+                autoplay.idle += dt;
+                if (autoplay.idle < AUTOPLAY_DWELL) return;
+                autoplay.idle = 0;
+                // idle long enough: carry on from the chapter after the one on screen
+                let current = 0;
+                AUTOPLAY_ORDER.forEach((id, i) => { if (scroll >= CHAPTERS[id].nav - 0.02) current = i; });
+                if (current >= AUTOPLAY_ORDER.length - 1) return;   // already at the last chapter
+                autoplay.on = true;
+                autoplay.index = current + 1;
+                autoplay.timer = 0;
+                scrollToProgress(CHAPTERS[AUTOPLAY_ORDER[autoplay.index]].nav, 'instant');
+                return;
+            }
+
+            const id = AUTOPLAY_ORDER[autoplay.index];
+            if (!isActive(scroll, id)) return;   // the 8 seconds start once the chapter is on screen
+            autoplay.timer += dt;
+
+            if (id === 'slide-5') {
+                // walk through the gallery during its turn
+                const t = Math.min(1, autoplay.timer / AUTOPLAY_DWELL);
+                scrollToProgress(CHAPTERS[id].nav + (GALLERY_MOTION[1] - CHAPTERS[id].nav) * t, 'instant');
+            }
+
+            if (autoplay.timer >= AUTOPLAY_DWELL) {
+                autoplay.timer = 0;
+                autoplay.index++;
+                if (autoplay.index >= AUTOPLAY_ORDER.length) {   // finished on Visit
+                    autoplay.on = false;
+                    return;
+                }
+                scrollToProgress(CHAPTERS[AUTOPLAY_ORDER[autoplay.index]].nav, 'instant');
+            }
         }
 
         function setupNavigation() {
@@ -1075,6 +1130,8 @@
             requestAnimationFrame(animate);
             const deltaTime = Math.min(clock.getDelta(), 0.1);
             const elapsed = clock.elapsedTime;
+
+            updateAutoplay(deltaTime, currentScroll);
 
             // 1. target scroll [0..1]
             const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
@@ -1227,6 +1284,14 @@
                 targetMouseY = (event.clientY / window.innerHeight) * 2 - 1;
             });
             window.addEventListener('resize', onWindowResize);
+
+            // any deliberate input hands control back to the visitor; autoplay resumes after 8 idle seconds
+            for (const type of ['wheel', 'touchstart', 'pointerdown', 'keydown']) {
+                window.addEventListener(type, pauseAutoplay, { passive: true });
+            }
+            // while autoplay is off, every scroll is the visitor's (or momentum), so keep the idle clock at zero
+            window.addEventListener('scroll', () => { if (!autoplay.on) autoplay.idle = 0; }, { passive: true });
+
             // card widths depend on the web fonts/viewport only, but re-measure once everything settles
             window.addEventListener('load', measureGallery);
 
