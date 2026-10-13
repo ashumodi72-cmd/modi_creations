@@ -1,0 +1,6 @@
+# Local tooling
+.claude/
+
+# Source material for the site (not needed to host it)
+*.docx
+Modi_logo_gold .jpeg
