@@ -560,12 +560,21 @@
         const STORY_SEGMENTS = [[0, 0.17], [0.17, 0.37], [0.37, 0.52], [0.52, 0.85], [0.85, 1.0]];
         const GALLERY_MOTION = [0.575, 0.80];
 
-        // Autoplay: with no clicks, taps, wheel, scroll or keys, the page walks itself through
-        // the chapters, holding each one for 8 seconds once it is on screen
-        const AUTOPLAY_DWELL = 8;
+        // Autoplay: with no clicks, taps, wheel, scroll or keys, the page scrolls itself smoothly
+        // from chapter to chapter, taking 8 seconds for each glide
+        const AUTOPLAY_STEP = 8;            // seconds per chapter-to-chapter glide (and idle time before resuming)
+        const AUTOPLAY_START_DELAY = 2.5;   // let the ring settle in before the first glide
         const AUTOPLAY_ORDER = ['slide-1', 'slide-2', 'slide-3', 'slide-5', 'slide-4'];
         const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const autoplay = { on: !REDUCED_MOTION, index: 0, timer: 0, idle: 0 };
+        const autoplay = {
+            on: !REDUCED_MOTION,
+            delay: AUTOPLAY_START_DELAY,
+            from: 0,                 // scroll progress the current glide started at
+            next: 1,                 // index into AUTOPLAY_ORDER of the chapter being glided to
+            t: 0,
+            duration: AUTOPLAY_STEP,
+            idle: 0
+        };
 
         // ---------------------------------------------------------------
         // Bird ring photo turntable
@@ -1055,48 +1064,55 @@
         // ---------------------------------------------------------------
         // Autoplay through the chapters
         // ---------------------------------------------------------------
-        // Jumps are instant on purpose: the smoothed scroll (currentScroll) already glides the
-        // scene and text to each chapter.
+        // Each glide eases in and out, so the page slows into every chapter and never stops dead;
+        // the gallery slides past during the Collection-to-Visit glide.
+        function scrollProgressNow() {
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            return maxScroll > 0 ? window.scrollY / maxScroll : 0;
+        }
+
+        function startGlide(from, next, duration) {
+            Object.assign(autoplay, { on: true, from, next, t: 0, duration });
+        }
+
         function pauseAutoplay() {
             autoplay.on = false;
             autoplay.idle = 0;
         }
 
-        function updateAutoplay(dt, scroll) {
+        function updateAutoplay(dt) {
             if (!autoplay.on) {
                 if (REDUCED_MOTION) return;
                 autoplay.idle += dt;
-                if (autoplay.idle < AUTOPLAY_DWELL) return;
+                if (autoplay.idle < AUTOPLAY_STEP) return;
                 autoplay.idle = 0;
-                // idle long enough: carry on from the chapter after the one on screen
-                let current = 0;
-                AUTOPLAY_ORDER.forEach((id, i) => { if (scroll >= CHAPTERS[id].nav - 0.02) current = i; });
-                if (current >= AUTOPLAY_ORDER.length - 1) return;   // already at the last chapter
-                autoplay.on = true;
-                autoplay.index = current + 1;
-                autoplay.timer = 0;
-                scrollToProgress(CHAPTERS[AUTOPLAY_ORDER[autoplay.index]].nav, 'instant');
+                // idle long enough: glide on to the next chapter at the usual pace
+                const p = scrollProgressNow();
+                const next = AUTOPLAY_ORDER.findIndex(id => CHAPTERS[id].nav > p + 0.01);
+                if (next === -1) return;   // already at the last chapter
+                const prev = next > 0 ? CHAPTERS[AUTOPLAY_ORDER[next - 1]].nav : 0;
+                const to = CHAPTERS[AUTOPLAY_ORDER[next]].nav;
+                startGlide(p, next, Math.max(2, AUTOPLAY_STEP * (to - p) / (to - prev)));
                 return;
             }
 
-            const id = AUTOPLAY_ORDER[autoplay.index];
-            if (!isActive(scroll, id)) return;   // the 8 seconds start once the chapter is on screen
-            autoplay.timer += dt;
-
-            if (id === 'slide-5') {
-                // walk through the gallery during its turn
-                const t = Math.min(1, autoplay.timer / AUTOPLAY_DWELL);
-                scrollToProgress(CHAPTERS[id].nav + (GALLERY_MOTION[1] - CHAPTERS[id].nav) * t, 'instant');
+            if (autoplay.delay > 0) {
+                autoplay.delay -= dt;
+                return;
             }
 
-            if (autoplay.timer >= AUTOPLAY_DWELL) {
-                autoplay.timer = 0;
-                autoplay.index++;
-                if (autoplay.index >= AUTOPLAY_ORDER.length) {   // finished on Visit
+            autoplay.t += dt;
+            const k = Math.min(1, autoplay.t / autoplay.duration);
+            const eased = (1 - Math.cos(Math.PI * k)) / 2;
+            const to = CHAPTERS[AUTOPLAY_ORDER[autoplay.next]].nav;
+            scrollToProgress(autoplay.from + (to - autoplay.from) * eased, 'instant');
+
+            if (k >= 1) {
+                if (autoplay.next >= AUTOPLAY_ORDER.length - 1) {   // arrived at Visit: done
                     autoplay.on = false;
                     return;
                 }
-                scrollToProgress(CHAPTERS[AUTOPLAY_ORDER[autoplay.index]].nav, 'instant');
+                startGlide(to, autoplay.next + 1, AUTOPLAY_STEP);
             }
         }
 
@@ -1131,7 +1147,7 @@
             const deltaTime = Math.min(clock.getDelta(), 0.1);
             const elapsed = clock.elapsedTime;
 
-            updateAutoplay(deltaTime, currentScroll);
+            updateAutoplay(deltaTime);
 
             // 1. target scroll [0..1]
             const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
