@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#000000">
     <meta property="og:title" content="Modi Creations — Beauty and Value">
     <meta property="og:description" content="Handmade Kundan Jadau jewellery in 22kt gold, inspired by Ancient India. Jaipur, since 1995.">
-    <meta property="og:image" content="assets/monogram.png">
+    <meta property="og:image" content="https://modicreations.com/assets/og-image.jpg">
     <link rel="icon" type="image/png" href="assets/favicon.png">
 
     <style>
@@ -35,7 +35,7 @@
         }
 
         body {
-            min-height: 900vh;
+            min-height: 1300vh;
             font-family: 'Outfit', sans-serif;
             color: #ffffff;
             overflow-x: hidden;
@@ -198,6 +198,57 @@
         }
         #slide-4 .col-2 { transition-delay: 0.6s; }
 
+        /* Collection chapter: title sits low, the gallery strip runs above it */
+        #slide-5 { left: 0; width: 100%; bottom: 6%; }
+        #slide-5 .slide-title { margin-left: 60px; font-size: 92px; white-space: nowrap; margin-bottom: 14px; }
+        #slide-5 .slide-desc { margin-left: 60px; max-width: 520px; }
+
+        /* ---------- Gallery strip ---------- */
+        .gallery {
+            position: fixed; inset: 0;
+            z-index: 8;
+            pointer-events: none;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0s linear 0.8s;
+        }
+        .gallery.active { opacity: 1; visibility: visible; transition: opacity 0.8s ease; }
+        .gallery-track {
+            position: absolute; top: 92px; left: 0;
+            height: min(56vh, calc(100vh - 290px));   /* leave room for the title block below */
+            display: flex; gap: 8px;
+            will-change: transform;
+        }
+        /* photos are background-free cut-outs, so they float on the stage like the ring */
+        .gallery-card {
+            position: relative; flex: 0 0 auto;
+            height: 100%;
+            opacity: 0;
+            transform: translateY(40px);
+            filter: blur(8px);
+            transition: opacity 0.9s cubic-bezier(0.25, 1, 0.5, 1),
+                        transform 0.9s cubic-bezier(0.25, 1, 0.5, 1),
+                        filter 0.9s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .gallery.active .gallery-card { opacity: 1; transform: translateY(0); filter: blur(0); }
+        .gallery-card img {
+            display: block;
+            height: 100%; width: auto;
+            will-change: transform;
+            /* soften the edges where the original frame cut through dresses and arms */
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%),
+                                linear-gradient(to top, transparent 0%, #000 22%);
+            -webkit-mask-composite: source-in;
+            mask-image: linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%),
+                        linear-gradient(to top, transparent 0%, #000 22%);
+            mask-composite: intersect;
+        }
+        .gallery-index {
+            position: absolute; left: 14px; bottom: 4px;
+            font-size: 10px; letter-spacing: 2px; font-weight: 500;
+            color: var(--ivory);
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+        }
+
         .slide-title {
             font-family: 'Italiana', serif;
             font-size: 116px;
@@ -286,6 +337,7 @@
         /* ---------- Smaller laptops ---------- */
         @media (max-width: 1200px), (max-height: 760px) {
             .slide-title { font-size: 92px; }
+            #slide-5 .slide-title { font-size: 76px; }
         }
 
         /* ---------- Phones / narrow tablets ---------- */
@@ -300,7 +352,7 @@
             .slide-desc { font-size: 14px; line-height: 1.6; }
 
             .slide,
-            #slide-1, #slide-2, #slide-3, #slide-4 {
+            #slide-1, #slide-2, #slide-3, #slide-4, #slide-5 {
                 left: 20px; right: 20px;
                 width: auto; max-width: none;
                 bottom: 9%;
@@ -308,7 +360,12 @@
             #slide-1 .slide-title,
             #slide-2 .slide-title,
             #slide-4 .slide-title,
-            #slide-4 .desc-row { margin-left: 0; }
+            #slide-4 .desc-row,
+            #slide-5 .slide-title,
+            #slide-5 .slide-desc { margin-left: 0; }
+            #slide-5 .slide-title { font-size: 48px; white-space: normal; }
+
+            .gallery-track { top: 84px; height: 50vh; gap: 4px; }
             #slide-1 .desc-row,
             #slide-4 .desc-row { flex-direction: column; gap: 14px; }
             #slide-1 .col-1, #slide-1 .col-2,
@@ -359,6 +416,8 @@
                 <span class="nav-dot"></span>
                 <a href="#slide-3" class="nav-link">Craft</a>
                 <span class="nav-dot"></span>
+                <a href="#slide-5" class="nav-link">Collection</a>
+                <span class="nav-dot"></span>
                 <a href="#slide-4" class="nav-link">Visit</a>
             </nav>
             <div class="header-actions">
@@ -382,6 +441,11 @@
         <div class="slide" id="slide-3">
             <h2 class="slide-title">Kundan <br>Jadau</h2>
             <p class="slide-desc">Heritage-style carvings and engravings of flora and fauna on 22kt gold, set with diamonds, polki and precious stones.</p>
+        </div>
+
+        <div class="slide" id="slide-5">
+            <h2 class="slide-title">The Collection</h2>
+            <p class="slide-desc">A few pieces from our handmade collection: chokers, necklaces, earrings and rings in 22kt gold, polki and precious stones.</p>
         </div>
 
         <div class="slide" id="slide-4">
@@ -416,6 +480,21 @@
         <img src="assets/monogram.png" alt="Modi Creations monogram">
     </div>
 
+    <div class="gallery" aria-label="The Collection">
+        <div class="gallery-track">
+            <figure class="gallery-card"><img src="assets/gallery/collection-01.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Kundan polki choker with matching earrings"><figcaption class="gallery-index">01</figcaption></figure>
+            <figure class="gallery-card"><img src="assets/gallery/collection-02.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Three-layer polki necklace"><figcaption class="gallery-index">02</figcaption></figure>
+            <figure class="gallery-card"><img src="assets/gallery/collection-03.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Ruby and polki drop earrings"><figcaption class="gallery-index">03</figcaption></figure>
+            <figure class="gallery-card"><img src="assets/gallery/collection-04.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Polki ring with drop earrings"><figcaption class="gallery-index">04</figcaption></figure>
+            <figure class="gallery-card"><img src="assets/gallery/collection-05.webp" width="960" height="1200" loading="lazy" decoding="async" alt="Kundan band ring set with rubies and polki"><figcaption class="gallery-index">05</figcaption></figure>
+            <figure class="gallery-card"><img src="assets/gallery/collection-06.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Bird-motif polki earrings with pearl drops"><figcaption class="gallery-index">06</figcaption></figure>
+            <figure class="gallery-card"><img src="assets/gallery/collection-07.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Kundan polki necklace worn with ring and earrings"><figcaption class="gallery-index">07</figcaption></figure>
+            <figure class="gallery-card"><img src="assets/gallery/collection-08.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Ruby and polki choker with matching ring"><figcaption class="gallery-index">08</figcaption></figure>
+            <figure class="gallery-card"><img src="assets/gallery/collection-09.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Polki choker with green drops and earrings"><figcaption class="gallery-index">09</figcaption></figure>
+            <figure class="gallery-card"><img src="assets/gallery/collection-10.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Emerald and polki drop earrings"><figcaption class="gallery-index">10</figcaption></figure>
+        </div>
+    </div>
+
     <div class="grid-horizontal-line"></div>
     <div class="grid-lines">
         <div class="grid-line"><div class="grid-dot top"></div><div class="grid-dot bottom"></div></div>
@@ -430,6 +509,7 @@
                 <div class="story-dash"><div class="story-dash-fill" id="dash-fill-2"></div></div>
                 <div class="story-dash"><div class="story-dash-fill" id="dash-fill-3"></div></div>
                 <div class="story-dash"><div class="story-dash-fill" id="dash-fill-4"></div></div>
+                <div class="story-dash"><div class="story-dash-fill" id="dash-fill-5"></div></div>
             </div>
         </div>
     </div>
@@ -438,12 +518,12 @@
 
     <script type="module">
         import * as THREE from 'three';
-        import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
         const canvas = document.querySelector('#webgl');
         let scene, camera, renderer;
-        let ringModel;     // the procedural Kundan ring
-        let modelPivot;    // pivot group for perfect center-rotation
+        let modelPivot;          // pivot group the ring photos hang from
+        let turntable = null;    // the photo views of the bird ring, built once textures load
+        let introStart = null;   // clock time when the ring textures finished loading
         const clock = new THREE.Clock();
         let currentScroll = 0;   // smoothed accumulated scroll for lerping
 
@@ -464,19 +544,46 @@
         const sparkCount = 450;
         const sparkData = [];
 
-        const glints = [];            // twinkling star flares on the stones
-        const revealMaterials = [];   // materials whose reflections fade in on load
-
         const sizes = { width: window.innerWidth, height: window.innerHeight };
 
-        // Ring proportions (model units, before auto-scaling)
-        const BAND_R = 1.0;          // inner radius of the shank
-        const BAND_THICK = 0.15;     // shank thickness at the bottom
-        const BAND_HALF_W = 0.17;    // half the shank width at the bottom
-        const MODEL_SIZE = 2.5;      // largest dimension after auto-scaling
+        // ---------------------------------------------------------------
+        // Scroll timeline (0 = top of the page, 1 = bottom)
+        // ---------------------------------------------------------------
+        const CHAPTERS = {
+            'slide-1': { active: [-0.10, 0.09],  nav: 0.0 },
+            'slide-2': { active: [0.20, 0.29],   nav: 0.245 },
+            'slide-3': { active: [0.40, 0.49],   nav: 0.445 },
+            'slide-5': { active: [0.555, 0.815], nav: 0.585 },
+            'slide-4': { active: [0.885, 1.05],  nav: 0.95 }
+        };
+        // one stories-style dash per chapter, in page order
+        const STORY_SEGMENTS = [[0, 0.17], [0.17, 0.37], [0.37, 0.52], [0.52, 0.85], [0.85, 1.0]];
+        const GALLERY_MOTION = [0.575, 0.80];
+
+        // ---------------------------------------------------------------
+        // Bird ring photo turntable
+        // ---------------------------------------------------------------
+        // Both product shots share one camera scale, so world size comes from the
+        // source-pixel crop of each cut-out (side view is the tallest).
+        const RING_HEIGHT = 2.2;
+        const PX = RING_HEIGHT / 1329;
         const PIVOT_Y = -0.3;
-        const RING_YAW = -0.5;       // three-quarter view so the engraving and setting read
         const INTRO_DURATION = 2.6;
+        const FRONT = { src: 'assets/hero/ring-front.png', w: 1417 * PX, h: 1088 * PX,
+            glints: [[0.392, 0.051], [0.487, 0.053], [0.430, 0.114], [0.552, 0.142], [0.605, 0.185], [0.481, 0.196], [0.184, 0.262], [0.721, 0.270]] };
+        const SIDE = { src: 'assets/hero/ring-side.png', w: 1124 * PX, h: 1329 * PX,
+            glints: [[0.471, 0.026], [0.559, 0.035], [0.404, 0.060], [0.378, 0.146], [0.303, 0.180], [0.394, 0.218], [0.425, 0.276], [0.495, 0.311]] };
+        // Four views around the ring, keyed by the camera azimuth that sees each one
+        // straight on. The bird's head points left in the front photo and right in the
+        // side photo, so mirrored copies keep neighbouring views consistent.
+        const RING_VIEWS = [
+            { angle: 0,   ...FRONT, mirror: false },
+            { angle: 90,  ...SIDE,  mirror: true },
+            { angle: 180, ...FRONT, mirror: true },
+            { angle: 270, ...SIDE,  mirror: false }
+        ];
+        const TURN_BLEND = 0.12;   // half-width of each crossfade, as a fraction of the 90° step
+        const TURN_YAW = 0.5;      // how far a view leans in perspective as the camera moves off it
 
         const dom = {};
 
@@ -665,7 +772,7 @@
                     colors[i * 3 + 1] = 0.62 + Math.random() * 0.16;
                     colors[i * 3 + 2] = 0.18 + Math.random() * 0.14;
                 } else {
-                    // icy diamond white (matches the rim light)
+                    // icy diamond white
                     colors[i * 3] = 0.72 + Math.random() * 0.14;
                     colors[i * 3 + 1] = 0.86 + Math.random() * 0.1;
                     colors[i * 3 + 2] = 1.0;
@@ -698,98 +805,7 @@
             scene.add(sparkParticles);
         }
 
-        // ---------------------------------------------------------------
-        // Procedural textures for the ring
-        // ---------------------------------------------------------------
-
-        // Flora engraving for the shank: milgrain rails and a scrolling vine with
-        // leaves and rosettes. Only the top half of the canvas is used (v 0..0.5 is
-        // the outer dome of the band); the inside of the band stays plain.
-        function drawEngraving(ctx, w, h, bg, fg) {
-            ctx.fillStyle = bg;
-            ctx.fillRect(0, 0, w, h);
-            ctx.fillStyle = fg;
-            ctx.strokeStyle = fg;
-            ctx.lineCap = 'round';
-            ctx.filter = 'blur(0.8px)';
-
-            const band = h / 2;
-            const waves = 6;
-            const mid = band * 0.5;
-            const amp = band * 0.15;
-
-            // milgrain bead rows and rails along both edges
-            for (let x = 5; x < w; x += 12) {
-                for (const y of [band * 0.1, band * 0.9]) {
-                    ctx.beginPath(); ctx.arc(x, y, 3.4, 0, Math.PI * 2); ctx.fill();
-                }
-            }
-            ctx.lineWidth = 2.5;
-            for (const y of [band * 0.2, band * 0.8]) {
-                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-            }
-
-            // vine stem
-            const stemY = (x) => mid + Math.sin((x / w) * Math.PI * 2 * waves) * amp;
-            ctx.lineWidth = 3.5;
-            ctx.beginPath();
-            for (let x = 0; x <= w; x += 2) {
-                if (x === 0) ctx.moveTo(x, stemY(x)); else ctx.lineTo(x, stemY(x));
-            }
-            ctx.stroke();
-
-            // leaves at every crest, curling back toward the centre line
-            const leaf = (x, y, angle, len) => {
-                ctx.save();
-                ctx.translate(x, y);
-                ctx.rotate(angle);
-                ctx.beginPath();
-                ctx.ellipse(len * 0.5, 0, len * 0.5, len * 0.2, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            };
-            for (let k = 0; k < waves * 2; k++) {
-                const x = ((k + 0.5) / (waves * 2)) * w;
-                const y = stemY(x);
-                const toMid = Math.sign(mid - y);
-                leaf(x, y, toMid * 0.9 - Math.PI * 0.0, band * 0.2);
-                leaf(x, y, Math.PI - toMid * 0.9, band * 0.2);
-            }
-
-            // five-petal rosettes where the stem crosses the centre line
-            for (let k = 0; k < waves * 2; k++) {
-                const x = (k / (waves * 2)) * w;
-                for (let p = 0; p < 5; p++) {
-                    const a = (p / 5) * Math.PI * 2;
-                    ctx.beginPath();
-                    ctx.arc(x + Math.cos(a) * 5, mid + Math.sin(a) * 5, 3.2, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-                ctx.beginPath(); ctx.arc(x, mid, 2.4, 0, Math.PI * 2); ctx.fill();
-            }
-            ctx.filter = 'none';
-        }
-
-        function createEngravingTextures() {
-            const w = 1024, h = 256;
-            const make = (bg, fg) => {
-                const c = document.createElement('canvas');
-                c.width = w; c.height = h;
-                drawEngraving(c.getContext('2d'), w, h, bg, fg);
-                const tex = new THREE.CanvasTexture(c);
-                tex.flipY = false;
-                tex.wrapS = THREE.RepeatWrapping;
-                tex.repeat.set(2, 1);
-                tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-                return tex;
-            };
-            const bump = make('#4a4a4a', '#e8e8e8');
-            const color = make('#a4a4a4', '#ffffff');
-            color.colorSpace = THREE.SRGBColorSpace;
-            return { bump, color };
-        }
-
-        // Four-point star flare used for the twinkles on the stones
+        // Four-point star flare used for twinkles on the stones and the turn flash
         function createGlintTexture() {
             const size = 128, c = document.createElement('canvas');
             c.width = c.height = size;
@@ -825,353 +841,110 @@
         }
 
         // ---------------------------------------------------------------
-        // Ring geometry
+        // Ring photo turntable
         // ---------------------------------------------------------------
+        function loadRing() {
+            modelPivot = new THREE.Group();
+            modelPivot.position.y = PIVOT_Y;
+            scene.add(modelPivot);
 
-        // Shank tapers: thicker and wider toward the head (top of the ring)
-        function bandShape(phi) {
-            const t = (1 + Math.sin(phi)) * 0.5;
-            const t3 = t * t * t;
-            return {
-                thick: BAND_THICK * (1 + 1.4 * t3),
-                half: BAND_HALF_W * (1 + 0.9 * t3)
-            };
-        }
-
-        // Point on the shank. phi runs around the ring (PI/2 = top), theta around the
-        // cross-section: a rounded dome on the outside, a flatter comfort-fit inside.
-        function bandPoint(phi, theta, out) {
-            const { thick, half } = bandShape(phi);
-            const c = Math.cos(theta), s = Math.sin(theta);
-            const e = c >= 0 ? 2 / 2.4 : 2 / 6.0;
-            const sx = Math.sign(c) * Math.pow(Math.abs(c), e);
-            const sy = Math.sign(s) * Math.pow(Math.abs(s), e);
-            const radial = BAND_R + thick * 0.5 * (1 + sx);
-            return out.set(Math.cos(phi) * radial, Math.sin(phi) * radial, half * sy);
-        }
-
-        function createBandGeometry(U = 288, V = 72) {
-            const positions = [], normals = [], uvs = [], indices = [];
-            const p = new THREE.Vector3(), du = new THREE.Vector3(), dv = new THREE.Vector3();
-            const n = new THREE.Vector3(), centre = new THREE.Vector3(), out = new THREE.Vector3();
-            const eps = 1e-4;
-
-            for (let i = 0; i <= U; i++) {
-                const phi = (i / U) * Math.PI * 2;
-                const { thick } = bandShape(phi);
-                centre.set(Math.cos(phi), Math.sin(phi), 0).multiplyScalar(BAND_R + thick * 0.5);
-                for (let j = 0; j <= V; j++) {
-                    const theta = -Math.PI / 2 + (j / V) * Math.PI * 2;
-                    bandPoint(phi, theta, p);
-                    bandPoint(phi + eps, theta, du).sub(p);
-                    bandPoint(phi, theta + eps, dv).sub(p);
-                    n.crossVectors(du, dv).normalize();
-                    if (n.dot(out.subVectors(p, centre)) < 0) n.negate();
-                    positions.push(p.x, p.y, p.z);
-                    normals.push(n.x, n.y, n.z);
-                    uvs.push(i / U, j / V);
-                }
-            }
-
-            // Pick a winding that faces outward
-            const a0 = 0, b0 = V + 1, d0 = 1;
-            const va = new THREE.Vector3().fromArray(positions, a0 * 3);
-            const vb = new THREE.Vector3().fromArray(positions, b0 * 3);
-            const vd = new THREE.Vector3().fromArray(positions, (d0 + Math.floor(V / 4)) * 3);
-            const na = new THREE.Vector3().fromArray(normals, a0 * 3);
-            const flip = new THREE.Vector3().crossVectors(vb.sub(va), vd.sub(va)).dot(na) < 0;
-
-            for (let i = 0; i < U; i++) {
-                for (let j = 0; j < V; j++) {
-                    const a = i * (V + 1) + j;
-                    const b = (i + 1) * (V + 1) + j;
-                    const c = b + 1;
-                    const d = a + 1;
-                    if (flip) indices.push(a, d, b, b, d, c);
-                    else indices.push(a, b, d, b, c, d);
-                }
-            }
-
-            const geometry = new THREE.BufferGeometry();
-            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-            geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
-            geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
-            geometry.setIndex(indices);
-            return geometry;
-        }
-
-        // Round brilliant cut of radius 1, table facing +Y
-        function createBrilliantGeometry(segments = 16) {
-            const crownH = 0.32, tableR = 0.56, girdle = 0.03, pavilionH = 0.86;
-            const pts = [
-                new THREE.Vector2(0.0001, -pavilionH),
-                new THREE.Vector2(0.55, -pavilionH * 0.45),
-                new THREE.Vector2(1.0, -girdle),
-                new THREE.Vector2(1.0, girdle),
-                new THREE.Vector2(0.8, crownH * 0.55),
-                new THREE.Vector2(tableR, crownH),
-                new THREE.Vector2(0.0001, crownH)
-            ];
-            return new THREE.LatheGeometry(pts, segments);
-        }
-
-        function createRing() {
-            const ring = new THREE.Group();
-            const engraving = createEngravingTextures();
-
-            const engravedGold = new THREE.MeshStandardMaterial({
-                color: '#e9b553',
-                metalness: 1.0,
-                roughness: 0.34,
-                map: engraving.color,
-                bumpMap: engraving.bump,
-                bumpScale: 1.4,
-                envMapIntensity: 0.6
+            const textures = {};
+            const manager = new THREE.LoadingManager(() => {
+                turntable = createTurntable(textures);
+                modelPivot.add(turntable.group);
+                introStart = clock.elapsedTime;
             });
-            const polishedGold = new THREE.MeshStandardMaterial({
-                color: '#f1c262',
-                metalness: 1.0,
-                roughness: 0.2,
-                envMapIntensity: 0.75
-            });
-            const emerald = new THREE.MeshPhysicalMaterial({
-                color: '#1fb56a',
-                metalness: 0.0,
-                roughness: 0.02,
-                transmission: 1.0,
-                thickness: 0.8,
-                ior: 1.58,
-                attenuationColor: '#0a7a42',
-                attenuationDistance: 0.45,
-                specularIntensity: 1.0,
-                emissive: '#04361d',
-                emissiveIntensity: 0.6,
-                flatShading: true,
-                envMapIntensity: 1.6
-            });
-            const diamond = new THREE.MeshPhysicalMaterial({
-                color: '#ffffff',
-                metalness: 0.0,
-                roughness: 0.0,
-                transmission: 1.0,
-                thickness: 0.3,
-                ior: 2.33,
-                specularIntensity: 1.0,
-                iridescence: 0.45,
-                iridescenceIOR: 1.6,
-                flatShading: true,
-                envMapIntensity: 2.4
-            });
-            for (const m of [engravedGold, polishedGold, emerald, diamond]) {
-                m.userData.envTarget = m.envMapIntensity;
-                m.envMapIntensity = 0;
-                revealMaterials.push(m);
+            const loader = new THREE.TextureLoader(manager);
+            for (const src of new Set(RING_VIEWS.map(v => v.src))) {
+                textures[src] = loader.load(src, (tex) => {
+                    tex.colorSpace = THREE.SRGBColorSpace;
+                    tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+                });
             }
-
-            const brilliant = createBrilliantGeometry(16);
-            const smallBrilliant = createBrilliantGeometry(12);
-            const helper = new THREE.Object3D();
-            const UP = new THREE.Vector3(0, 1, 0);
-            const glintSpots = [];
-
-            // --- shank ---
-            ring.add(new THREE.Mesh(createBandGeometry(), engravedGold));
-
-            // --- head: lotus collet, plate, milgrain rim ---
-            const headBase = BAND_R + BAND_THICK * 2.4 - 0.06;
-            const colletH = 0.3;
-            const collet = new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.27, colletH, 64), polishedGold);
-            collet.position.y = headBase + colletH / 2;
-            ring.add(collet);
-
-            const plateY = headBase + colletH + 0.035;
-            const plateTop = plateY + 0.035;
-            const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.64, 0.6, 0.07, 96), polishedGold);
-            plate.position.y = plateY;
-            ring.add(plate);
-
-            const rim = new THREE.Mesh(new THREE.TorusGeometry(0.64, 0.03, 16, 128), polishedGold);
-            rim.rotation.x = Math.PI / 2;
-            rim.position.y = plateY;
-            ring.add(rim);
-
-            const beadCount = 64;
-            const beads = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 12, 8), polishedGold, beadCount);
-            for (let i = 0; i < beadCount; i++) {
-                const a = (i / beadCount) * Math.PI * 2;
-                helper.position.set(Math.cos(a) * 0.64, plateY + 0.03, Math.sin(a) * 0.64);
-                helper.quaternion.identity();
-                helper.scale.setScalar(0.022);
-                helper.updateMatrix();
-                beads.setMatrixAt(i, helper.matrix);
-            }
-            ring.add(beads);
-
-            // lotus petals cradling the collet (the flora motif)
-            const petalCount = 10;
-            const petals = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 24, 16), polishedGold, petalCount);
-            const petalPivot = new THREE.Object3D();
-            const petal = new THREE.Object3D();
-            petalPivot.add(petal);
-            petal.position.set(0, 0, 0.3);
-            petal.rotation.x = -0.75;
-            petal.scale.set(0.1, 0.03, 0.2);
-            for (let i = 0; i < petalCount; i++) {
-                petalPivot.rotation.y = (i / petalCount) * Math.PI * 2;
-                petalPivot.position.y = headBase + 0.06;
-                petalPivot.updateMatrixWorld(true);
-                petals.setMatrixAt(i, petal.matrixWorld);
-            }
-            ring.add(petals);
-
-            // --- centre stone: emerald ---
-            const centreR = 0.4;
-            const girdleY = plateTop + 0.05;
-            const centre = new THREE.Mesh(brilliant, emerald);
-            centre.scale.setScalar(centreR);
-            centre.position.y = girdleY;
-            ring.add(centre);
-            glintSpots.push(new THREE.Vector3(0.12, girdleY + centreR * 0.36, 0.1));
-            glintSpots.push(new THREE.Vector3(-0.2, girdleY + centreR * 0.2, -0.16));
-
-            // six claws holding the emerald
-            const clawCount = 6;
-            const claws = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.022, 0.026, 1, 10), polishedGold, clawCount);
-            const clawTips = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 14, 10), polishedGold, clawCount);
-            const base = new THREE.Vector3(), tip = new THREE.Vector3(), dir = new THREE.Vector3();
-            for (let i = 0; i < clawCount; i++) {
-                const a = ((i + 0.5) / clawCount) * Math.PI * 2;
-                base.set(Math.cos(a) * 0.42, plateTop - 0.01, Math.sin(a) * 0.42);
-                tip.set(Math.cos(a) * 0.36, girdleY + centreR * 0.2, Math.sin(a) * 0.36);
-                dir.subVectors(tip, base);
-                helper.position.copy(base).addScaledVector(dir, 0.5);
-                helper.quaternion.setFromUnitVectors(UP, dir.clone().normalize());
-                helper.scale.set(1, dir.length(), 1);
-                helper.updateMatrix();
-                claws.setMatrixAt(i, helper.matrix);
-
-                helper.position.copy(tip);
-                helper.quaternion.identity();
-                helper.scale.setScalar(0.034);
-                helper.updateMatrix();
-                clawTips.setMatrixAt(i, helper.matrix);
-            }
-            ring.add(claws, clawTips);
-
-            // --- diamonds: halo around the emerald + pavé down both shoulders ---
-            const haloCount = 18;
-            const shoulder = [
-                { d: 0.5, r: 0.062 }, { d: 0.64, r: 0.056 },
-                { d: 0.78, r: 0.05 }, { d: 0.92, r: 0.044 }
-            ];
-            const diamondCount = haloCount + shoulder.length * 2;
-            const diamonds = new THREE.InstancedMesh(smallBrilliant, diamond, diamondCount);
-            const bezels = new THREE.InstancedMesh(new THREE.TorusGeometry(1, 0.2, 8, 32), polishedGold, shoulder.length * 2);
-            let di = 0;
-
-            for (let i = 0; i < haloCount; i++) {
-                const a = (i / haloCount) * Math.PI * 2;
-                helper.position.set(Math.cos(a) * 0.535, plateTop + 0.012, Math.sin(a) * 0.535);
-                helper.quaternion.identity();
-                helper.scale.setScalar(0.068);
-                helper.updateMatrix();
-                diamonds.setMatrixAt(di++, helper.matrix);
-                if (i % 3 === 0) glintSpots.push(helper.position.clone().add(new THREE.Vector3(0, 0.04, 0)));
-            }
-
-            const surface = new THREE.Vector3(), normal = new THREE.Vector3();
-            const Z = new THREE.Vector3(0, 0, 1);
-            let bi = 0;
-            for (const side of [-1, 1]) {
-                for (const { d, r } of shoulder) {
-                    const phi = Math.PI / 2 + side * d;
-                    bandPoint(phi, 0, surface);
-                    normal.set(Math.cos(phi), Math.sin(phi), 0);
-
-                    helper.position.copy(surface).addScaledVector(normal, 0.004);
-                    helper.quaternion.setFromUnitVectors(UP, normal);
-                    helper.scale.setScalar(r);
-                    helper.updateMatrix();
-                    diamonds.setMatrixAt(di++, helper.matrix);
-
-                    helper.quaternion.setFromUnitVectors(Z, normal);
-                    helper.scale.setScalar(r * 1.08);
-                    helper.updateMatrix();
-                    bezels.setMatrixAt(bi++, helper.matrix);
-
-                    if (d < 0.7) glintSpots.push(surface.clone().addScaledVector(normal, 0.05));
-                }
-            }
-            ring.add(diamonds, bezels);
-
-            ring.userData.glintSpots = glintSpots;
-            return ring;
         }
 
-        function addGlints(ring) {
-            const texture = createGlintTexture();
-            for (const spot of ring.userData.glintSpots) {
-                const material = new THREE.SpriteMaterial({
-                    map: texture,
-                    color: '#fff3dc',
+        function createTurntable(textures) {
+            const group = new THREE.Group();
+            const glintTexture = createGlintTexture();
+            const additive = (color) => new THREE.SpriteMaterial({
+                map: glintTexture, color, transparent: true, opacity: 0,
+                blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, toneMapped: false
+            });
+
+            const views = RING_VIEWS.map((view) => {
+                const material = new THREE.MeshBasicMaterial({
+                    map: textures[view.src],
                     transparent: true,
                     opacity: 0,
-                    blending: THREE.AdditiveBlending,
-                    depthWrite: false
+                    depthWrite: false,
+                    side: THREE.DoubleSide,
+                    toneMapped: false      // show the photograph's own colours
                 });
-                const sprite = new THREE.Sprite(material);
-                sprite.position.copy(spot);
-                sprite.scale.setScalar(0.001);
-                ring.add(sprite);
-                glints.push({
-                    sprite,
-                    speed: 0.5 + Math.random() * 0.9,
-                    phase: Math.random() * Math.PI * 2,
-                    size: 0.32 + Math.random() * 0.18
+                const mesh = new THREE.Mesh(new THREE.PlaneGeometry(view.w, view.h), material);
+                mesh.scale.x = view.mirror ? -1 : 1;
+                group.add(mesh);
+
+                // twinkles sit on the brightest polki/gold highlights of each photo
+                const glints = view.glints.map(([u, v]) => {
+                    const sprite = new THREE.Sprite(additive('#fff3dc'));
+                    sprite.position.set((u - 0.5) * view.w, (0.5 - v) * view.h, 0.02);
+                    sprite.renderOrder = 10;
+                    mesh.add(sprite);
+                    return {
+                        sprite,
+                        speed: 0.5 + Math.random() * 0.9,
+                        phase: Math.random() * Math.PI * 2,
+                        size: 0.26 + Math.random() * 0.16
+                    };
                 });
-            }
+                return { ...view, mesh, material, glints };
+            });
+
+            // a burst of light that covers the swap between two photos
+            const flare = new THREE.Sprite(additive('#ffe7b8'));
+            flare.position.set(0, 0.35, 0.05);
+            flare.renderOrder = 11;
+            group.add(flare);
+
+            return { group, views, flare };
         }
 
-        // ---------------------------------------------------------------
-        // Model setup + centering/scaling logic
-        // ---------------------------------------------------------------
-        function loadModel() {
-            ringModel = createRing();
-            ringModel.rotation.y = RING_YAW;
+        // Picks the two photos either side of the camera's current angle, leans each one
+        // in perspective and crossfades them. Returns the flare strength (0..1).
+        function updateTurntable(elapsed, intro, visibility) {
+            const azimuth = THREE.MathUtils.radToDeg(Math.atan2(camera.position.x, camera.position.z));
+            const a = ((azimuth % 360) + 360) % 360;
+            const seg = Math.floor(a / 90) % 4;
+            const next = (seg + 1) % 4;
+            const t = (a - seg * 90) / 90;
+            const blend = smoothRange(0.5 - TURN_BLEND, 0.5 + TURN_BLEND, t);
+            const flare = Math.max(0, 1 - Math.abs(t - 0.5) / 0.18);
 
-            modelPivot = new THREE.Group();
-            scene.add(modelPivot);
-            modelPivot.add(ringModel);
+            turntable.views.forEach((view, i) => {
+                // the incoming photo fades in over the outgoing one, which holds until it is covered
+                let weight = 0;
+                if (i === seg) weight = 1 - smoothRange(0.45, 1.0, blend);
+                if (i === next) weight = smoothRange(0.0, 0.55, blend);
+                view.mesh.visible = weight > 0.001;
+                view.mesh.renderOrder = i === next ? 2 : 1;
 
-            ringModel.traverse((child) => {
-                if (child.isMesh) {
-                    child.castShadow = true;
-                    child.receiveShadow = true;
+                const off = ((a - view.angle + 540) % 360) - 180;   // degrees off this view, -180..180
+                view.mesh.rotation.y = -THREE.MathUtils.degToRad(off) * TURN_YAW;
+                view.material.opacity = weight * intro * visibility;
+
+                for (const g of view.glints) {
+                    const flash = Math.pow(Math.max(0, Math.sin(elapsed * g.speed + g.phase)), 28);
+                    g.sprite.material.opacity = flash * weight * intro * visibility;
+                    g.sprite.material.rotation = elapsed * 0.4 + g.phase;
+                    g.sprite.scale.setScalar(Math.max(0.001, g.size * flash));
                 }
             });
 
-            // 1. scale so max dimension = MODEL_SIZE
-            const boxInitial = new THREE.Box3().setFromObject(ringModel);
-            const sizeInitial = boxInitial.getSize(new THREE.Vector3());
-            const maxDim = Math.max(sizeInitial.x, sizeInitial.y, sizeInitial.z);
-            const targetScale = MODEL_SIZE / (maxDim > 0.0001 ? maxDim : 1);
-            ringModel.scale.setScalar(targetScale);
-
-            // 2. update world matrix so the box accounts for scale
-            ringModel.updateMatrixWorld(true);
-
-            // 3. exact geometric center of the scaled model
-            const boxScaled = new THREE.Box3().setFromObject(ringModel);
-            const centerScaled = boxScaled.getCenter(new THREE.Vector3());
-
-            // 4. recenter model so its center sits at the pivot origin
-            ringModel.position.sub(centerScaled);
-
-            // 5. pivot height for a grounded stance
-            modelPivot.position.y = PIVOT_Y;
-
-            // glints are added after measuring so they don't affect the bounds
-            addGlints(ringModel);
+            const burst = flare * flare * intro * visibility;
+            turntable.flare.material.opacity = burst * 0.9;
+            turntable.flare.material.rotation = elapsed * 0.3;
+            turntable.flare.scale.setScalar(0.6 + 2.4 * burst);
+            return burst;
         }
 
         // ---------------------------------------------------------------
@@ -1187,6 +960,7 @@
             // gl_FragCoord is in device pixels, so match it
             const pr = renderer.getPixelRatio();
             shaderUniforms.uResolution.value.set(sizes.width * pr, sizes.height * pr);
+            measureGallery();
         }
 
         // ---------------------------------------------------------------
@@ -1206,26 +980,61 @@
         // ---------------------------------------------------------------
         // Slides + stories progress
         // ---------------------------------------------------------------
+        function smoothRange(a, b, v) {
+            const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
+            return t * t * (3 - 2 * t);
+        }
+
+        function isActive(scroll, id) {
+            const [start, end] = CHAPTERS[id].active;
+            return scroll >= start && scroll <= end;
+        }
+
         function updateSlides(scroll) {
-            for (let i = 1; i <= 4; i++) {
-                const fill = dom.fills[i - 1];
-                if (fill) {
-                    const start = (i - 1) * 0.25;
-                    const end = i * 0.25;
-                    let progress = (scroll - start) / (end - start);
-                    progress = Math.max(0, Math.min(1, progress));
-                    fill.style.height = `${progress * 100}%`;
-                }
+            STORY_SEGMENTS.forEach(([start, end], i) => {
+                const progress = Math.max(0, Math.min(1, (scroll - start) / (end - start)));
+                dom.fills[i].style.height = `${progress * 100}%`;
+            });
+
+            for (const id of Object.keys(CHAPTERS)) {
+                dom.slides[id].classList.toggle('active', isActive(scroll, id));
             }
+            dom.slide2Img.classList.toggle('active', isActive(scroll, 'slide-2'));
+            dom.gallery.classList.toggle('active', isActive(scroll, 'slide-5'));
+        }
 
-            const isActive = (val, start, end) => val >= start && val <= end;
+        // ---------------------------------------------------------------
+        // Gallery strip: glides sideways through the Collection chapter
+        // ---------------------------------------------------------------
+        const galleryLayout = { width: 0, centers: [] };
 
-            dom.slide1.classList.toggle('active', isActive(scroll, -0.10, 0.12));
-            const active2 = isActive(scroll, 0.28, 0.40);
-            dom.slide2.classList.toggle('active', active2);
-            dom.slide2Img.classList.toggle('active', active2);
-            dom.slide3.classList.toggle('active', isActive(scroll, 0.56, 0.68));
-            dom.slide4.classList.toggle('active', isActive(scroll, 0.84, 1.05));
+        function measureGallery() {
+            if (!dom.track) return;
+            galleryLayout.width = dom.track.scrollWidth;
+            galleryLayout.centers = dom.cards.map(card => card.offsetLeft + card.offsetWidth / 2);
+        }
+
+        let galleryPrimed = false;
+
+        function updateGallery(scroll) {
+            // start fetching the photos a chapter early so the strip never opens on empty frames
+            if (!galleryPrimed && scroll > 0.3) {
+                galleryPrimed = true;
+                dom.images.forEach(img => { img.loading = 'eager'; });
+            }
+            if (!dom.gallery.classList.contains('active')) return;
+            const vw = sizes.width;
+            const p = smoothRange(GALLERY_MOTION[0], GALLERY_MOTION[1], scroll);
+            const startX = vw * 0.62;                            // first photo enters right of centre
+            const endX = -(galleryLayout.width - vw * 0.38);     // last photo leaves left of centre
+            const x = startX + (endX - startX) * p;
+            dom.track.style.transform = `translate3d(${x}px, 0, 0)`;
+
+            // slight counter-drift inside each frame for depth
+            dom.images.forEach((img, i) => {
+                const offset = (x + galleryLayout.centers[i] - vw / 2) / vw;
+                img.style.transform = `translate3d(${-offset * 4}%, 0, 0)`;
+            });
         }
 
         // ---------------------------------------------------------------
@@ -1237,20 +1046,16 @@
         }
 
         function setupNavigation() {
-            const targetScrolls = [0.0, 0.34, 0.62, 0.94];
-            document.querySelectorAll('.nav-link').forEach((link, index) => {
+            document.querySelectorAll('.nav-link, .contact-btn').forEach((link) => {
+                const id = link.getAttribute('href').slice(1);
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    scrollToProgress(targetScrolls[index]);
+                    scrollToProgress(CHAPTERS[id].nav);
                 });
             });
             document.querySelector('.brand').addEventListener('click', (e) => {
                 e.preventDefault();
                 scrollToProgress(0);
-            });
-            document.querySelector('.contact-btn').addEventListener('click', (e) => {
-                e.preventDefault();
-                scrollToProgress(0.94);
             });
 
             // custom cursor grows over anything clickable
@@ -1265,11 +1070,6 @@
         // ---------------------------------------------------------------
         const targetLookAt = new THREE.Vector3();
         const targetPos = new THREE.Vector3();
-
-        function smoothRange(a, b, v) {
-            const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
-            return t * t * (3 - 2 * t);
-        }
 
         function animate() {
             requestAnimationFrame(animate);
@@ -1295,31 +1095,53 @@
             dom.cursorOuter.style.left = `${outerCursorX}px`;
             dom.cursorOuter.style.top = `${outerCursorY}px`;
 
-            // intro reveal + interactive tilt + a slow idle sway
-            if (modelPivot) {
-                const intro = Math.min(1, elapsed / INTRO_DURATION);
-                const ease = 1 - Math.pow(1 - intro, 3);
+            // 2. camera orbits the ring 360° driven by scroll
+            const aspect = sizes.width / sizes.height;
+            const portrait = aspect < 0.9;
+            const distScale = Math.max(1.0, 0.72 / aspect);   // keep the ring in frame on phones
 
-                modelPivot.scale.setScalar(0.84 + 0.16 * ease);
-                modelPivot.position.y = PIVOT_Y - 0.3 * (1 - ease) + Math.sin(elapsed * 0.8) * 0.025;
-                modelPivot.rotation.y = mouseX * 0.25 + Math.sin(elapsed * 0.3) * 0.12 - 0.9 * (1 - ease);
-                modelPivot.rotation.x = mouseY * 0.15;
+            const phi = currentScroll * Math.PI * 2.0;
+            const y = 0.35 + Math.sin(currentScroll * Math.PI) * 0.8;
+            const radius = (4.2 - Math.sin(currentScroll * Math.PI) * 0.6) * distScale;
+            targetPos.set(radius * Math.sin(phi), y, radius * Math.cos(phi));
 
-                for (const m of revealMaterials) m.envMapIntensity = m.userData.envTarget * ease;
+            // framing: ring to the right for the opening and closing chapters (text on the
+            // left), centred for the story, to the left for "Kundan Jadau" (text on the right)
+            const openFactor = 1.0 - smoothRange(0.0, 0.2, currentScroll);
+            const outroFactor = smoothRange(0.84, 0.93, currentScroll);
+            const craftFactor = smoothRange(0.31, 0.40, currentScroll) * (1.0 - smoothRange(0.49, 0.56, currentScroll));
+            if (portrait) {
+                // on phones the text sits at the bottom, so lift the ring instead
+                targetLookAt.set(0, -1.05, 0);
+            } else {
+                // shift along the camera's own right vector so it reads the same from any side
+                const shift = -0.9 * Math.max(openFactor, outroFactor) + 0.75 * craftFactor;
+                targetLookAt.set(Math.cos(phi) * shift, -0.15, -Math.sin(phi) * shift);
+            }
+            camera.position.lerp(targetPos, 0.025);
+            camera.lookAt(targetLookAt);
 
-                for (const g of glints) {
-                    const flash = Math.pow(Math.max(0, Math.sin(elapsed * g.speed + g.phase)), 28) * ease;
-                    g.sprite.material.opacity = flash;
-                    g.sprite.material.rotation = elapsed * 0.4 + g.phase;
-                    g.sprite.scale.setScalar(Math.max(0.001, g.size * flash));
-                }
+            // 3. ring photos: face the camera, then add the visitor's tilt and a slow sway
+            let burst = 0;
+            if (turntable) {
+                const intro = 1 - Math.pow(1 - Math.min(1, (elapsed - introStart) / INTRO_DURATION), 3);
+                // step aside while the gallery has the stage
+                const visibility = 1 - smoothRange(0.50, 0.56, currentScroll) + smoothRange(0.82, 0.88, currentScroll);
+
+                modelPivot.quaternion.copy(camera.quaternion);
+                modelPivot.rotateY(mouseX * 0.25 + Math.sin(elapsed * 0.3) * 0.06);
+                modelPivot.rotateX(mouseY * 0.15);
+                modelPivot.scale.setScalar(0.84 + 0.16 * intro);
+                modelPivot.position.y = PIVOT_Y - 0.3 * (1 - intro) + Math.sin(elapsed * 0.8) * 0.025;
+
+                burst = updateTurntable(elapsed, intro, visibility);
             }
 
-            // 2. sparks physics, accelerated/turbulent on fast scroll
+            // 4. sparks physics, accelerated/turbulent on fast scroll and each turn flash
             if (sparkParticles) {
                 const positions = sparkParticles.geometry.attributes.position.array;
                 const scrollVelocity = Math.abs(targetScroll - currentScroll);
-                const speedMultiplier = 1.0 + scrollVelocity * 9.0;
+                const speedMultiplier = 1.0 + scrollVelocity * 9.0 + burst * 2.0;
                 const turbulence = scrollVelocity * 0.8;
 
                 for (let i = 0; i < sparkCount; i++) {
@@ -1343,43 +1165,13 @@
                 sparkParticles.geometry.attributes.position.needsUpdate = true;
             }
 
-            // 3. camera orbits the ring 360° driven by scroll
-            const aspect = sizes.width / sizes.height;
-            const portrait = aspect < 0.9;
-            const distScale = Math.max(1.0, 0.72 / aspect);   // keep the ring in frame on phones
-
-            const phi = currentScroll * Math.PI * 2.0;
-            const y = 0.35 + Math.sin(currentScroll * Math.PI) * 0.8;
-            const radius = (4.2 - Math.sin(currentScroll * Math.PI) * 0.6) * distScale;
-            const x = radius * Math.sin(phi);
-            const z = radius * Math.cos(phi);
-
-            // shift the framing left on the first screen to clear room for the text columns
-            const transitionProgress = Math.min(1.0, currentScroll / 0.28);
-            const easeFactor = (Math.cos(transitionProgress * Math.PI) + 1.0) * 0.5; // 1.0 → 0.0
-            // ...and ease back to the same framing for the closing chapter
-            const outroProgress = Math.min(1.0, Math.max(0.0, (currentScroll - 0.72) / 0.2));
-            const outroFactor = (1.0 - Math.cos(outroProgress * Math.PI)) * 0.5;   // 0.0 → 1.0
-            // the "Kundan Jadau" text sits on the right, so slide the ring left for it
-            const craftFactor = smoothRange(0.44, 0.58, currentScroll) * (1.0 - smoothRange(0.68, 0.8, currentScroll));
-            if (portrait) {
-                // on phones the text sits at the bottom, so lift the ring instead
-                targetLookAt.set(0, -1.05, 0);
-            } else {
-                // shift along the camera's own right vector so it reads the same from any side
-                const shift = -0.9 * Math.max(easeFactor, outroFactor) + 0.75 * craftFactor;
-                targetLookAt.set(Math.cos(phi) * shift, -0.15, -Math.sin(phi) * shift);
-            }
-            targetPos.set(x, y, z);
-            camera.position.lerp(targetPos, 0.025);
-            camera.lookAt(targetLookAt);
-
             // background shader uniforms
             shaderUniforms.uTime.value = elapsed;
             shaderUniforms.uMouse.value.set(mouseX, -mouseY);
             shaderUniforms.uScroll.value = currentScroll;
 
             updateSlides(currentScroll);
+            updateGallery(currentScroll);
             updateGridDots(currentScroll);
             renderer.render(scene, camera);
         }
@@ -1390,13 +1182,15 @@
         function init() {
             dom.cursorInner = document.querySelector('.cursor-inner');
             dom.cursorOuter = document.querySelector('.cursor-outer');
-            dom.slide1 = document.getElementById('slide-1');
-            dom.slide2 = document.getElementById('slide-2');
-            dom.slide3 = document.getElementById('slide-3');
-            dom.slide4 = document.getElementById('slide-4');
+            dom.slides = {};
+            for (const id of Object.keys(CHAPTERS)) dom.slides[id] = document.getElementById(id);
             dom.slide2Img = document.getElementById('slide-2-img');
-            dom.fills = [1, 2, 3, 4].map(i => document.getElementById(`dash-fill-${i}`));
+            dom.fills = STORY_SEGMENTS.map((_, i) => document.getElementById(`dash-fill-${i + 1}`));
             dom.dots = document.querySelectorAll('.grid-dot');
+            dom.gallery = document.querySelector('.gallery');
+            dom.track = document.querySelector('.gallery-track');
+            dom.cards = [...document.querySelectorAll('.gallery-card')];
+            dom.images = dom.cards.map(card => card.querySelector('img'));
 
             splitTitlesIntoChars();
 
@@ -1418,46 +1212,11 @@
             });
             renderer.setSize(sizes.width, sizes.height);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 2.2;
 
-            // Studio reflections for the gold and stones (lighting only, not the backdrop)
-            const pmrem = new THREE.PMREMGenerator(renderer);
-            scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
-            pmrem.dispose();
-
-            // --- Dramatic lighting (chiaroscuro) ---
-            const ambientLight = new THREE.AmbientLight('#ffffff', 0.1);
-            scene.add(ambientLight);
-
-            // Key light: super-bright white from upper-right, casts shadows
-            const keyLight = new THREE.SpotLight('#ffffff', 18.0);
-            keyLight.position.set(4, 6, 3);
-            keyLight.angle = Math.PI / 4;
-            keyLight.penumbra = 0.9;
-            keyLight.castShadow = true;
-            keyLight.shadow.mapSize.width = 2048;
-            keyLight.shadow.mapSize.height = 2048;
-            keyLight.shadow.camera.near = 1.0;
-            keyLight.shadow.camera.far = 15;
-            keyLight.shadow.bias = -0.001;
-            scene.add(keyLight);
-
-            // Rim light: cool blue from behind-left, defines the silhouette
-            const rimLight = new THREE.DirectionalLight('#e3f2ff', 10.0);
-            rimLight.position.set(-5, 3, -4);
-            scene.add(rimLight);
-
-            // Fill light: very faint warm cream from below-front
-            const fillLight = new THREE.DirectionalLight('#fff3e6', 0.8);
-            fillLight.position.set(-2, -4, 2);
-            scene.add(fillLight);
-
             createSparks();
-            loadModel();
+            loadRing();
 
             window.addEventListener('mousemove', (event) => {
                 cursorX = event.clientX;
@@ -1468,11 +1227,19 @@
                 targetMouseY = (event.clientY / window.innerHeight) * 2 - 1;
             });
             window.addEventListener('resize', onWindowResize);
+            // card widths depend on the web fonts/viewport only, but re-measure once everything settles
+            window.addEventListener('load', measureGallery);
 
             onWindowResize();
             animate();
             setupNavigation();
         }
+
+        // Always open at the top: the story only makes sense from its first chapter
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        window.scrollTo(0, 0);
+        window.addEventListener('pageshow', () => window.scrollTo(0, 0));   // also after back/forward cache restores
+        window.addEventListener('beforeunload', () => window.scrollTo(0, 0));
 
         if (document.readyState === 'loading') {
             window.addEventListener('DOMContentLoaded', init);
