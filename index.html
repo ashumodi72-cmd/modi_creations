@@ -35,7 +35,7 @@
         }
 
         body {
-            min-height: 1300vh;
+            min-height: 1840vh;   /* set from STORY_SCROLL_VH and GALLERY_STRETCH in the script */
             font-family: 'Outfit', sans-serif;
             color: #ffffff;
             overflow-x: hidden;
@@ -560,19 +560,53 @@
         const STORY_SEGMENTS = [[0, 0.17], [0.17, 0.37], [0.37, 0.52], [0.52, 0.85], [0.85, 1.0]];
         const GALLERY_MOTION = [0.575, 0.80];
 
+        // Everything above is laid out on a 0..1 "story" timeline. On the page itself the gallery
+        // stretch gets GALLERY_STRETCH times more scroll distance, so its photos pass slowly while
+        // every other chapter keeps its pace.
+        const GALLERY_STRETCH = 3;
+        const STORY_SCROLL_VH = 1200;   // scroll distance the story would take with no stretch
+        const PAGE_LENGTH = GALLERY_MOTION[0]
+            + (GALLERY_MOTION[1] - GALLERY_MOTION[0]) * GALLERY_STRETCH
+            + (1 - GALLERY_MOTION[1]);
+
+        function toPage(story) {
+            const [g0, g1] = GALLERY_MOTION;
+            let d = story;
+            if (story > g1) d = g0 + (g1 - g0) * GALLERY_STRETCH + (story - g1);
+            else if (story > g0) d = g0 + (story - g0) * GALLERY_STRETCH;
+            return d / PAGE_LENGTH;
+        }
+
+        function toStory(page) {
+            const [g0, g1] = GALLERY_MOTION;
+            const d = page * PAGE_LENGTH;
+            const galleryEnd = g0 + (g1 - g0) * GALLERY_STRETCH;
+            if (d <= g0) return d;
+            if (d <= galleryEnd) return g0 + (d - g0) / GALLERY_STRETCH;
+            return g1 + (d - galleryEnd);
+        }
+
         // Autoplay: with no clicks, taps, wheel, scroll or keys, the page scrolls itself smoothly
-        // from chapter to chapter, taking 8 seconds for each glide
-        const AUTOPLAY_STEP = 8;            // seconds per chapter-to-chapter glide (and idle time before resuming)
+        // through these stops (story timeline), easing into each chapter; the gallery gets a long,
+        // even glide so every photo has time on screen
+        const AUTOPLAY_STOPS = [
+            { at: CHAPTERS['slide-1'].nav },
+            { at: CHAPTERS['slide-2'].nav, seconds: 8 },
+            { at: CHAPTERS['slide-3'].nav, seconds: 8 },
+            { at: CHAPTERS['slide-5'].nav, seconds: 8 },
+            { at: GALLERY_MOTION[1],       seconds: 24, linear: true },
+            { at: CHAPTERS['slide-4'].nav, seconds: 8 }
+        ];
+        const AUTOPLAY_IDLE = 8;            // idle seconds before autoplay picks up again
         const AUTOPLAY_START_DELAY = 2.5;   // let the ring settle in before the first glide
-        const AUTOPLAY_ORDER = ['slide-1', 'slide-2', 'slide-3', 'slide-5', 'slide-4'];
         const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const autoplay = {
             on: !REDUCED_MOTION,
             delay: AUTOPLAY_START_DELAY,
-            from: 0,                 // scroll progress the current glide started at
-            next: 1,                 // index into AUTOPLAY_ORDER of the chapter being glided to
+            from: 0,                 // story progress the current glide started at
+            next: 1,                 // index into AUTOPLAY_STOPS of the stop being glided to
             t: 0,
-            duration: AUTOPLAY_STEP,
+            duration: AUTOPLAY_STOPS[1].seconds,
             idle: 0
         };
 
@@ -708,18 +742,18 @@
                     float crispSpecular = pow(max(0.0, 1.0 - abs(waveField - 0.15)), 8.0);
                     float crest = wideSheen * 0.5 + crispSpecular * 0.9;
 
-                    // --- 5. Scroll-driven palette: 22kt gold to deep emerald ---
+                    // --- 5. Scroll-driven palette: 22kt gold to deep ruby ---
                     // Top (scroll = 0): molten 22kt gold
                     vec3 c0_shadow = vec3(0.0010, 0.0007, 0.0003);
                     vec3 c0_wave1  = vec3(0.095, 0.058, 0.012);
                     vec3 c0_wave2  = vec3(0.055, 0.032, 0.006);
                     vec3 c0_crest  = vec3(0.30, 0.20, 0.065);
 
-                    // Bottom (scroll = 1): deep Kundan emerald
-                    vec3 c1_shadow = vec3(0.0003, 0.0010, 0.0006);
-                    vec3 c1_wave1  = vec3(0.010, 0.062, 0.036);
-                    vec3 c1_wave2  = vec3(0.005, 0.036, 0.020);
-                    vec3 c1_crest  = vec3(0.085, 0.29, 0.19);
+                    // Bottom (scroll = 1): deep Kundan ruby
+                    vec3 c1_shadow = vec3(0.0010, 0.0003, 0.0004);
+                    vec3 c1_wave1  = vec3(0.072, 0.010, 0.018);
+                    vec3 c1_wave2  = vec3(0.040, 0.005, 0.010);
+                    vec3 c1_crest  = vec3(0.33, 0.06, 0.09);
 
                     float t = smoothstep(0.0, 1.0, scroll);
                     vec3 colShadow = mix(c0_shadow, c1_shadow, t);
@@ -1064,8 +1098,7 @@
         // ---------------------------------------------------------------
         // Autoplay through the chapters
         // ---------------------------------------------------------------
-        // Each glide eases in and out, so the page slows into every chapter and never stops dead;
-        // the gallery slides past during the Collection-to-Visit glide.
+        // Chapter glides ease in and out, so the page slows into every chapter and never stops dead.
         function scrollProgressNow() {
             const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
             return maxScroll > 0 ? window.scrollY / maxScroll : 0;
@@ -1084,15 +1117,15 @@
             if (!autoplay.on) {
                 if (REDUCED_MOTION) return;
                 autoplay.idle += dt;
-                if (autoplay.idle < AUTOPLAY_STEP) return;
+                if (autoplay.idle < AUTOPLAY_IDLE) return;
                 autoplay.idle = 0;
-                // idle long enough: glide on to the next chapter at the usual pace
-                const p = scrollProgressNow();
-                const next = AUTOPLAY_ORDER.findIndex(id => CHAPTERS[id].nav > p + 0.01);
-                if (next === -1) return;   // already at the last chapter
-                const prev = next > 0 ? CHAPTERS[AUTOPLAY_ORDER[next - 1]].nav : 0;
-                const to = CHAPTERS[AUTOPLAY_ORDER[next]].nav;
-                startGlide(p, next, Math.max(2, AUTOPLAY_STEP * (to - p) / (to - prev)));
+                // idle long enough: glide on to the next stop at that stop's usual pace
+                const s = toStory(scrollProgressNow());
+                const next = AUTOPLAY_STOPS.findIndex(stop => stop.at > s + 0.005);
+                if (next === -1) return;   // already at the last stop
+                const prev = next > 0 ? AUTOPLAY_STOPS[next - 1].at : 0;
+                const { at, seconds } = AUTOPLAY_STOPS[next];
+                startGlide(s, next, Math.max(2, seconds * (at - s) / (at - prev)));
                 return;
             }
 
@@ -1102,17 +1135,17 @@
             }
 
             autoplay.t += dt;
+            const stop = AUTOPLAY_STOPS[autoplay.next];
             const k = Math.min(1, autoplay.t / autoplay.duration);
-            const eased = (1 - Math.cos(Math.PI * k)) / 2;
-            const to = CHAPTERS[AUTOPLAY_ORDER[autoplay.next]].nav;
-            scrollToProgress(autoplay.from + (to - autoplay.from) * eased, 'instant');
+            const eased = stop.linear ? k : (1 - Math.cos(Math.PI * k)) / 2;
+            scrollToProgress(toPage(autoplay.from + (stop.at - autoplay.from) * eased), 'instant');
 
             if (k >= 1) {
-                if (autoplay.next >= AUTOPLAY_ORDER.length - 1) {   // arrived at Visit: done
+                if (autoplay.next >= AUTOPLAY_STOPS.length - 1) {   // arrived at Visit: done
                     autoplay.on = false;
                     return;
                 }
-                startGlide(to, autoplay.next + 1, AUTOPLAY_STEP);
+                startGlide(stop.at, autoplay.next + 1, AUTOPLAY_STOPS[autoplay.next + 1].seconds);
             }
         }
 
@@ -1121,7 +1154,7 @@
                 const id = link.getAttribute('href').slice(1);
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    scrollToProgress(CHAPTERS[id].nav);
+                    scrollToProgress(toPage(CHAPTERS[id].nav));
                 });
             });
             document.querySelector('.brand').addEventListener('click', (e) => {
@@ -1155,8 +1188,9 @@
                 : (window.pageYOffset !== undefined ? window.pageYOffset : document.documentElement.scrollTop);
             const targetScroll = maxScroll > 0 ? scrollTop / maxScroll : 0;
 
-            // smooth physical lerp (inertia)
+            // smooth physical lerp (inertia), on the page; everything below reads the story timeline
             currentScroll += (targetScroll - currentScroll) * 0.025;
+            const story = toStory(currentScroll);
 
             // smooth model rotation lerp
             mouseX += (targetMouseX - mouseX) * 0.05;
@@ -1173,16 +1207,16 @@
             const portrait = aspect < 0.9;
             const distScale = Math.max(1.0, 0.72 / aspect);   // keep the ring in frame on phones
 
-            const phi = currentScroll * Math.PI * 2.0;
-            const y = 0.35 + Math.sin(currentScroll * Math.PI) * 0.8;
-            const radius = (4.2 - Math.sin(currentScroll * Math.PI) * 0.6) * distScale;
+            const phi = story * Math.PI * 2.0;
+            const y = 0.35 + Math.sin(story * Math.PI) * 0.8;
+            const radius = (4.2 - Math.sin(story * Math.PI) * 0.6) * distScale;
             targetPos.set(radius * Math.sin(phi), y, radius * Math.cos(phi));
 
             // framing: ring to the right for the opening and closing chapters (text on the
             // left), centred for the story, to the left for "Kundan Jadau" (text on the right)
-            const openFactor = 1.0 - smoothRange(0.0, 0.2, currentScroll);
-            const outroFactor = smoothRange(0.84, 0.93, currentScroll);
-            const craftFactor = smoothRange(0.31, 0.40, currentScroll) * (1.0 - smoothRange(0.49, 0.56, currentScroll));
+            const openFactor = 1.0 - smoothRange(0.0, 0.2, story);
+            const outroFactor = smoothRange(0.84, 0.93, story);
+            const craftFactor = smoothRange(0.31, 0.40, story) * (1.0 - smoothRange(0.49, 0.56, story));
             if (portrait) {
                 // on phones the text sits at the bottom, so lift the ring instead
                 targetLookAt.set(0, -1.05, 0);
@@ -1199,7 +1233,7 @@
             if (turntable) {
                 const intro = 1 - Math.pow(1 - Math.min(1, (elapsed - introStart) / INTRO_DURATION), 3);
                 // step aside while the gallery has the stage
-                const visibility = 1 - smoothRange(0.50, 0.56, currentScroll) + smoothRange(0.82, 0.88, currentScroll);
+                const visibility = 1 - smoothRange(0.50, 0.56, story) + smoothRange(0.82, 0.88, story);
 
                 modelPivot.quaternion.copy(camera.quaternion);
                 modelPivot.rotateY(mouseX * 0.25 + Math.sin(elapsed * 0.3) * 0.06);
@@ -1241,11 +1275,11 @@
             // background shader uniforms
             shaderUniforms.uTime.value = elapsed;
             shaderUniforms.uMouse.value.set(mouseX, -mouseY);
-            shaderUniforms.uScroll.value = currentScroll;
+            shaderUniforms.uScroll.value = story;
 
-            updateSlides(currentScroll);
-            updateGallery(currentScroll);
-            updateGridDots(currentScroll);
+            updateSlides(story);
+            updateGallery(story);
+            updateGridDots(story);
             renderer.render(scene, camera);
         }
 
@@ -1266,6 +1300,7 @@
             dom.images = dom.cards.map(card => card.querySelector('img'));
 
             splitTitlesIntoChars();
+            document.body.style.minHeight = `${100 + STORY_SCROLL_VH * PAGE_LENGTH}vh`;
 
             scene = new THREE.Scene();
             scene.background = new THREE.Color('#000000');

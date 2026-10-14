@@ -2,7 +2,7 @@
 
 Website for **Modi Creations**, Jaipur: handmade Kundan Jadau jewellery in 22kt gold, made since 1995.
 
-It's a single-page, scroll-driven WebGL experience. The hero is the bird ring, built from two product photos and turned into a four-view turntable: as you scroll and the camera circles, the ring leans in perspective and turns to its next side under a flash of light. Behind it, a liquid-gold wave shader slowly shifts to emerald. Five chapters overlay the scene: Heritage, Story, Craft, Collection (a sideways-gliding gallery of background-free photos) and Visit.
+It's a single-page, scroll-driven WebGL experience. The hero is the bird ring, built from two product photos and turned into a four-view turntable: as you scroll and the camera circles, the ring leans in perspective and turns to its next side under a flash of light. Behind it, a liquid-gold wave shader slowly warms to ruby red. Five chapters overlay the scene: Heritage, Story, Craft, Collection (a sideways-gliding gallery of background-free photos) and Visit.
 
 ## Files
 
@@ -33,5 +33,5 @@ GitHub Pages serves the `main` branch root at https://modicreations.com. DNS is 
 
 - **Wording:** the chapters are the `.slide` blocks in `index.html`.
 - **Contact details:** the `.contact-list` in the "Something Special" chapter.
-- **Gallery:** the `.gallery-card` figures. Each photo is a 800×1200 WebP with a transparent background.
+- **Gallery:** the `.gallery-card` figures. Each photo is a 800×1200 WebP with a transparent background. `GALLERY_STRETCH` sets how slowly the strip passes when scrolling; the 24-second gallery stop in `AUTOPLAY_STOPS` sets its autoplay pace.
 - **Chapter timing:** the `CHAPTERS` table in the script (where each chapter starts and ends in the scroll).
