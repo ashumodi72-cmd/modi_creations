@@ -27,7 +27,13 @@ npx serve .
 
 ## Hosting
 
-GitHub Pages serves the `main` branch root at https://modicreations.com. DNS is managed in Wix: the apex has four A records pointing to 185.199.108–111.153, and `www` is a CNAME to `ashumodi72-cmd.github.io`.
+GitHub Pages serves the `main` branch root at https://modicreations.com. DNS is managed at GoDaddy (nameservers ns25/ns26.domaincontrol.com):
+
+- **A records for `@`:** 185.199.108.153, 185.199.109.153, 185.199.110.153 and 185.199.111.153
+- **CNAME for `www`:** `ashumodi72-cmd.github.io`
+- **TXT for `@`:** the `google-site-verification=…` record that keeps Google Search Console verified. Don't delete it.
+
+Google Search Console has a Domain property for modicreations.com (owner: ashumodi72@gmail.com), with `sitemap.xml` submitted.
 
 ## Editing content
 
