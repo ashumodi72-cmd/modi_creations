@@ -9,7 +9,7 @@ It's a single-page, scroll-driven WebGL experience. The hero is the bird ring, b
 | Path | What it is |
 | --- | --- |
 | `index.html` | The whole site: markup, styles and the Three.js scene (loaded from unpkg via an import map) |
-| `assets/hero/ring-front.png`, `ring-side.png` | Bird ring cut-outs (from DSC_3955 and DSC_3958) used by the turntable |
+| `assets/hero/ring-front.webp`, `ring-side.webp` | Bird ring cut-outs (from DSC_3955 and DSC_3958) used by the turntable |
 | `assets/gallery/collection-01…10.webp` | Collection photos with the backdrop removed |
 | `assets/og-image.jpg` | Preview image for links shared on WhatsApp, Facebook and similar |
 | `assets/wordmark.png`, `monogram.png`, `favicon.png` | Logo pieces cut from the gold logo |

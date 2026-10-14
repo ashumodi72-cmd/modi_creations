@@ -5,15 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modi Creations — Kundan Jadau Jewellery, Jaipur</title>
     <meta name="description" content="Modi Creations, Jaipur — handmade Kundan Jadau jewellery in 22kt gold with diamonds, polki and precious stones. Crafting since 1995. Visits by appointment only.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://modicreations.com/">
     <meta name="theme-color" content="#000000">
-    <meta property="og:title" content="Modi Creations — Beauty and Value">
-    <meta property="og:description" content="Handmade Kundan Jadau jewellery in 22kt gold, inspired by Ancient India. Jaipur, since 1995.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Modi Creations">
+    <meta property="og:url" content="https://modicreations.com/">
+    <meta property="og:title" content="Modi Creations — Kundan Jadau Jewellery, Jaipur">
+    <meta property="og:description" content="Handmade Kundan Jadau jewellery in 22kt gold with diamonds, polki and precious stones. Jaipur, since 1995. Visits by appointment only.">
     <meta property="og:image" content="https://modicreations.com/assets/og-image.jpg">
+    <meta property="og:image:width" content="800">
+    <meta property="og:image:height" content="1200">
+    <meta property="og:image:alt" content="Kundan polki choker with matching earrings by Modi Creations">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Modi Creations — Kundan Jadau Jewellery, Jaipur">
+    <meta name="twitter:description" content="Handmade Kundan Jadau jewellery in 22kt gold with diamonds, polki and precious stones. Jaipur, since 1995.">
+    <meta name="twitter:image" content="https://modicreations.com/assets/og-image.jpg">
+
     <link rel="icon" type="image/png" href="assets/favicon.png">
+    <!-- fonts: connect early and load as a stylesheet (an @import would only be found after the CSS) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Outfit:wght@300;400;500;600&display=swap">
+    <!-- start fetching the 3D library and the hero ring right away -->
+    <link rel="modulepreload" href="https://unpkg.com/three@0.160.0/build/three.module.min.js" crossorigin>
+    <link rel="preload" as="image" href="assets/hero/ring-front.webp" type="image/webp" crossorigin>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "JewelryStore",
+                "@id": "https://modicreations.com/#store",
+                "name": "Modi Creations",
+                "url": "https://modicreations.com/",
+                "logo": "https://modicreations.com/assets/monogram.png",
+                "image": [
+                    "https://modicreations.com/assets/og-image.jpg",
+                    "https://modicreations.com/assets/hero/ring-front.webp"
+                ],
+                "description": "Handmade Kundan Jadau jewellery in 22kt gold with diamonds, polki and precious stones, inspired by Ancient India. Visits by appointment only.",
+                "foundingDate": "1995",
+                "founder": {
+                    "@type": "Person",
+                    "name": "Pinku Modi",
+                    "jobTitle": "Founder",
+                    "description": "Founder of Modi Creations, crafting Kundan Jadau jewellery in Jaipur since 1995 for clients across India and overseas."
+                },
+                "telephone": "+91 98288 59456",
+                "email": "modicreationsjpr@gmail.com",
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "A 456-A, Malviya Nagar",
+                    "addressLocality": "Jaipur",
+                    "addressRegion": "Rajasthan",
+                    "postalCode": "302017",
+                    "addressCountry": "IN"
+                },
+                "sameAs": [
+                    "https://www.instagram.com/modicreations/",
+                    "https://www.facebook.com/modicreationsjpr/"
+                ]
+            },
+            {
+                "@type": "WebSite",
+                "@id": "https://modicreations.com/#website",
+                "url": "https://modicreations.com/",
+                "name": "Modi Creations",
+                "publisher": { "@id": "https://modicreations.com/#store" }
+            }
+        ]
+    }
+    </script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Italiana&family=Outfit:wght@300;400;500;600&display=swap');
-
         :root {
             --gold: #d9a94e;
             --gold-light: #f3d48a;
@@ -391,10 +458,30 @@
         }
     </style>
 
+    <noscript>
+        <style>
+            /* Without JavaScript there is no 3D stage or scroll story: lay everything out as a plain page */
+            body { min-height: 0; cursor: auto; }
+            * { cursor: auto !important; }
+            .cursor-inner, .cursor-outer, #webgl, .grid-lines, .grid-horizontal-line { display: none; }
+            .cinematic-container { position: static; height: auto; display: block; padding: 0 24px 40px; }
+            .slide, #slide-1, #slide-2, #slide-3, #slide-4, #slide-5 { position: static; width: auto; max-width: 720px; margin: 56px 0; }
+            .slide-title, #slide-5 .slide-title { font-size: 56px; margin-left: 0 !important; white-space: normal !important; }
+            .slide-desc { opacity: 1; transform: none; position: static !important; margin-left: 0 !important; width: auto !important; max-width: 640px !important; }
+            .desc-row { display: block !important; margin-left: 0 !important; }
+            .desc-row .slide-desc + .slide-desc { margin-top: 16px; }
+            #slide-2-img { position: static; opacity: 1; clip-path: none; width: 220px; margin: 0 24px; }
+            #slide-2-img img { transform: none; }
+            .gallery { position: static; opacity: 1; visibility: visible; padding: 0 24px 60px; }
+            .gallery-track { position: static; height: auto; flex-wrap: wrap; gap: 16px; }
+            .gallery-card { height: 360px; opacity: 1; transform: none; filter: none; }
+        </style>
+    </noscript>
+
     <script type="importmap">
     {
         "imports": {
-            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.min.js",
             "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
         }
     }
@@ -407,7 +494,7 @@
     <div class="cinematic-container">
         <div class="main-header">
             <a href="#slide-1" class="brand" aria-label="Modi Creations — home">
-                <img src="assets/wordmark.png" alt="Modi Creations">
+                <img src="assets/wordmark.png" width="688" height="76" alt="Modi Creations">
             </a>
             <nav class="header-nav">
                 <a href="#slide-1" class="nav-link">Heritage</a>
@@ -477,7 +564,7 @@
     </div>
 
     <div class="slide-image-mask" id="slide-2-img">
-        <img src="assets/monogram.png" alt="Modi Creations monogram">
+        <img src="assets/monogram.png" width="720" height="720" loading="lazy" decoding="async" alt="Modi Creations feather M monogram">
     </div>
 
     <div class="gallery" aria-label="The Collection">
@@ -514,7 +601,37 @@
         </div>
     </div>
 
-    <canvas id="webgl"></canvas>
+    <canvas id="webgl" role="img" aria-label="Handmade 22kt gold Kundan bird ring with rubies, emeralds and polki diamonds by Modi Creations, turning as you scroll"></canvas>
+
+    <script>
+        // Runs before the 3D module downloads, so the first chapter's headline shows straight away.
+        // Each title is split into per-letter spans for the blur-up reveal; the heading keeps its
+        // words as an aria-label so screen readers and search engines read "Beauty and Value".
+        (function splitTitlesIntoChars() {
+            document.querySelectorAll('.slide-title').forEach(title => {
+                const text = title.innerHTML;
+                let newHTML = '';
+                let delayCounter = 0;
+                title.setAttribute('aria-label', title.textContent.replace(/\s+/g, ' ').trim());
+                text.split(/(<br\s*\/?>)/i).forEach(part => {
+                    if (part.toLowerCase().startsWith('<br')) {
+                        newHTML += part;
+                        return;
+                    }
+                    for (let i = 0; i < part.length; i++) {
+                        if (part[i] === ' ') {
+                            newHTML += ' ';
+                        } else {
+                            newHTML += `<span class="char" aria-hidden="true" style="transition-delay: ${delayCounter * 0.035}s">${part[i]}</span>`;
+                            delayCounter++;
+                        }
+                    }
+                });
+                title.innerHTML = newHTML;
+            });
+            document.getElementById('slide-1').classList.add('active');
+        })();
+    </script>
 
     <script type="module">
         import * as THREE from 'three';
@@ -619,9 +736,9 @@
         const PX = RING_HEIGHT / 1329;
         const PIVOT_Y = -0.3;
         const INTRO_DURATION = 2.6;
-        const FRONT = { src: 'assets/hero/ring-front.png', w: 1417 * PX, h: 1088 * PX,
+        const FRONT = { src: 'assets/hero/ring-front.webp', w: 1417 * PX, h: 1088 * PX,
             glints: [[0.392, 0.051], [0.487, 0.053], [0.430, 0.114], [0.552, 0.142], [0.605, 0.185], [0.481, 0.196], [0.184, 0.262], [0.721, 0.270]] };
-        const SIDE = { src: 'assets/hero/ring-side.png', w: 1124 * PX, h: 1329 * PX,
+        const SIDE = { src: 'assets/hero/ring-side.webp', w: 1124 * PX, h: 1329 * PX,
             glints: [[0.471, 0.026], [0.559, 0.035], [0.404, 0.060], [0.378, 0.146], [0.303, 0.180], [0.394, 0.218], [0.425, 0.276], [0.495, 0.311]] };
         // Four views around the ring, keyed by the camera azimuth that sees each one
         // straight on. The bird's head points left in the front photo and right in the
@@ -636,34 +753,6 @@
         const TURN_YAW = 0.5;      // how far a view leans in perspective as the camera moves off it
 
         const dom = {};
-
-        // ---------------------------------------------------------------
-        // Per-letter title split
-        // ---------------------------------------------------------------
-        function splitTitlesIntoChars() {
-            const titles = document.querySelectorAll('.slide-title');
-            titles.forEach(title => {
-                const text = title.innerHTML;
-                let newHTML = '';
-                let delayCounter = 0;
-                const parts = text.split(/(<br\s*\/?>)/i);
-                parts.forEach(part => {
-                    if (part.toLowerCase().startsWith('<br')) {
-                        newHTML += part;
-                    } else {
-                        for (let i = 0; i < part.length; i++) {
-                            if (part[i] === ' ') {
-                                newHTML += ' ';
-                            } else {
-                                newHTML += `<span class="char" style="transition-delay: ${delayCounter * 0.035}s">${part[i]}</span>`;
-                                delayCounter++;
-                            }
-                        }
-                    }
-                });
-                title.innerHTML = newHTML;
-            });
-        }
 
         // ---------------------------------------------------------------
         // Background liquid-gold wave shader (full-screen plane, child of camera)
@@ -1299,7 +1388,6 @@
             dom.cards = [...document.querySelectorAll('.gallery-card')];
             dom.images = dom.cards.map(card => card.querySelector('img'));
 
-            splitTitlesIntoChars();
             document.body.style.minHeight = `${100 + STORY_SCROLL_VH * PAGE_LENGTH}vh`;
 
             scene = new THREE.Scene();

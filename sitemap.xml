@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+    <url>
+        <loc>https://modicreations.com/</loc>
+        <lastmod>2026-10-14</lastmod>
+        <image:image><image:loc>https://modicreations.com/assets/hero/ring-front.webp</image:loc></image:image>
+        <image:image><image:loc>https://modicreations.com/assets/hero/ring-side.webp</image:loc></image:image>
+        <image:image><image:loc>https://modicreations.com/assets/og-image.jpg</image:loc></image:image>
+        <image:image><image:loc>https://modicreations.com/assets/gallery/collection-01.webp</image:loc></image:image>
+        <image:image><image:loc>https://modicreations.com/assets/gallery/collection-02.webp</image:loc></image:image>
+        <image:image><image:loc>https://modicreations.com/assets/gallery/collection-03.webp</image:loc></image:image>
+        <image:image><image:loc>https://modicreations.com/assets/gallery/collection-04.webp</image:loc></image:image>
+        <image:image><image:loc>https://modicreations.com/assets/gallery/collection-05.webp</image:loc></image:image>
+        <image:image><image:loc>https://modicreations.com/assets/gallery/collection-06.webp</image:loc></image:image>
+        <image:image><image:loc>https://modicreations.com/assets/gallery/collection-07.webp</image:loc></image:image>
+        <image:image><image:loc>https://modicreations.com/assets/gallery/collection-08.webp</image:loc></image:image>
+        <image:image><image:loc>https://modicreations.com/assets/gallery/collection-09.webp</image:loc></image:image>
+        <image:image><image:loc>https://modicreations.com/assets/gallery/collection-10.webp</image:loc></image:image>
+    </url>
+</urlset>

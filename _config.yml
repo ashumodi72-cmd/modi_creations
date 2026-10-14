@@ -1,0 +1,4 @@
+# GitHub Pages build settings. The site is plain HTML; this only keeps
+# repo-only files from being published as pages.
+exclude:
+  - README.md

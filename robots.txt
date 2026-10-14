@@ -1,0 +1,5 @@
+# Everything on modicreations.com may be crawled, including by Googlebot.
+User-agent: *
+Allow: /
+
+Sitemap: https://modicreations.com/sitemap.xml
