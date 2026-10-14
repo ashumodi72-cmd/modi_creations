@@ -172,11 +172,23 @@
         .brand img { display: block; height: 18px; width: auto; }
         .header-nav { display: flex; align-items: center; gap: 24px; }
         .nav-link {
+            position: relative;
             color: #ffffff; text-decoration: none;
             font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
             font-weight: 500; transition: color 0.3s;
         }
         .nav-link:hover { color: var(--gold-light); }
+        /* the chapter currently on screen */
+        .nav-link.active { color: var(--gold-light); }
+        .nav-link::after {
+            content: '';
+            position: absolute; left: 0; right: 0; bottom: -7px;
+            height: 1px;
+            background: var(--gold-light);
+            transform: scaleX(0);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .nav-link.active::after { transform: scaleX(1); }
         .nav-dot { width: 3px; height: 3px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; }
         .contact-btn {
             display: inline-flex; align-items: center; gap: 8px;
@@ -241,10 +253,11 @@
         #slide-2-img.active img { transform: scale(1); }
 
         #slide-2 .slide-title { margin-left: calc(25vw + 40px); }
+        /* the ring sits centre-screen in this chapter, so the paragraph takes the right-hand column */
         #slide-2 .slide-desc {
-            margin-left: calc(50vw + 20px);
-            width: calc(25vw - 60px);
-            max-width: calc(25vw - 60px);
+            margin-left: 75vw;
+            width: calc(25vw - 80px);
+            max-width: calc(25vw - 80px);
         }
 
         #slide-3 {
@@ -367,39 +380,15 @@
         .contact-list a:hover { color: var(--gold-light); }
         .contact-sep { color: rgba(255, 255, 255, 0.3); margin: 0 6px; }
 
-        /* ---------- Grid overlay ---------- */
-        .story-dashes {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
+        /* ---------- Chapter progress (stories-style dashes, one per chapter) ---------- */
+        .story-progress {
+            position: fixed; right: 40px; top: 50%;
+            transform: translateY(-50%);
             display: flex; flex-direction: column; gap: 12px;
+            z-index: 5; pointer-events: none;
         }
         .story-dash { width: 2px; height: 40px; background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
         .story-dash-fill { width: 100%; height: 0%; background: var(--gold-light); border-radius: 2px; }
-
-        .grid-horizontal-line {
-            position: fixed; top: 70px; left: 0; right: 0;
-            width: 100%; height: 1px;
-            background: rgba(255, 255, 255, 0.12);
-            z-index: 5; pointer-events: none;
-        }
-        .grid-lines {
-            position: fixed; top: 0; left: 40px; right: 40px;
-            width: calc(100% - 80px); height: 100vh;
-            display: flex; justify-content: space-between;
-            z-index: 5; pointer-events: none;
-        }
-        .grid-line {
-            position: relative; width: 1px; height: 100%;
-            background: rgba(255, 255, 255, 0.12);
-        }
-        .grid-line:nth-child(3) { margin-top: 70px; height: calc(100vh - 70px); }
-        .grid-dot {
-            position: absolute; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 6px; height: 6px; border-radius: 50%;
-            background: rgba(255, 255, 255, 0.35);
-            box-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
-        }
 
         /* ---------- Smaller laptops ---------- */
         @media (max-width: 1200px), (max-height: 760px) {
@@ -447,9 +436,7 @@
 
             #slide-2-img { top: 84px; left: 20px; width: 36vw; }
 
-            .grid-lines { left: 16px; right: 16px; width: calc(100% - 32px); }
-            .grid-line:nth-child(2),
-            .grid-line:nth-child(4) { display: none; }
+            .story-progress { right: 14px; }
         }
 
         /* Touch screens have no pointer to follow */
@@ -463,7 +450,7 @@
             /* Without JavaScript there is no 3D stage or scroll story: lay everything out as a plain page */
             body { min-height: 0; cursor: auto; }
             * { cursor: auto !important; }
-            .cursor-inner, .cursor-outer, #webgl, .grid-lines, .grid-horizontal-line { display: none; }
+            .cursor-inner, .cursor-outer, #webgl, .story-progress { display: none; }
             .cinematic-container { position: static; height: auto; display: block; padding: 0 24px 40px; }
             .slide, #slide-1, #slide-2, #slide-3, #slide-4, #slide-5 { position: static; width: auto; max-width: 720px; margin: 56px 0; }
             .slide-title, #slide-5 .slide-title { font-size: 56px; margin-left: 0 !important; white-space: normal !important; }
@@ -493,22 +480,22 @@
 
     <div class="cinematic-container">
         <div class="main-header">
-            <a href="#slide-1" class="brand" aria-label="Modi Creations — home">
+            <a href="#heritage" class="brand" aria-label="Modi Creations — home">
                 <img src="assets/wordmark.png" width="688" height="76" alt="Modi Creations">
             </a>
             <nav class="header-nav">
-                <a href="#slide-1" class="nav-link">Heritage</a>
+                <a href="#heritage" class="nav-link">Heritage</a>
                 <span class="nav-dot"></span>
-                <a href="#slide-2" class="nav-link">Story</a>
+                <a href="#story" class="nav-link">Story</a>
                 <span class="nav-dot"></span>
-                <a href="#slide-3" class="nav-link">Craft</a>
+                <a href="#craft" class="nav-link">Craft</a>
                 <span class="nav-dot"></span>
-                <a href="#slide-5" class="nav-link">Collection</a>
+                <a href="#collection" class="nav-link">Collection</a>
                 <span class="nav-dot"></span>
-                <a href="#slide-4" class="nav-link">Visit</a>
+                <a href="#visit" class="nav-link">Visit</a>
             </nav>
             <div class="header-actions">
-                <a href="#slide-4" class="contact-btn">Contact <span class="btn-circle"></span></a>
+                <a href="#visit" class="contact-btn">Contact <span class="btn-circle"></span></a>
             </div>
         </div>
 
@@ -570,7 +557,7 @@
     <div class="gallery" aria-label="The Collection">
         <div class="gallery-track">
             <figure class="gallery-card"><img src="assets/gallery/collection-01.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Kundan polki choker with matching earrings"><figcaption class="gallery-index">01</figcaption></figure>
-            <figure class="gallery-card"><img src="assets/gallery/collection-02.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Three-layer polki necklace"><figcaption class="gallery-index">02</figcaption></figure>
+            <figure class="gallery-card"><img src="assets/gallery/collection-02.webp" width="800" height="1277" loading="lazy" decoding="async" alt="Three-layer polki necklace"><figcaption class="gallery-index">02</figcaption></figure>
             <figure class="gallery-card"><img src="assets/gallery/collection-03.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Ruby and polki drop earrings"><figcaption class="gallery-index">03</figcaption></figure>
             <figure class="gallery-card"><img src="assets/gallery/collection-04.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Polki ring with drop earrings"><figcaption class="gallery-index">04</figcaption></figure>
             <figure class="gallery-card"><img src="assets/gallery/collection-05.webp" width="960" height="1200" loading="lazy" decoding="async" alt="Kundan band ring set with rubies and polki"><figcaption class="gallery-index">05</figcaption></figure>
@@ -582,23 +569,12 @@
         </div>
     </div>
 
-    <div class="grid-horizontal-line"></div>
-    <div class="grid-lines">
-        <div class="grid-line"><div class="grid-dot top"></div><div class="grid-dot bottom"></div></div>
-        <div class="grid-line"><div class="grid-dot top"></div><div class="grid-dot bottom"></div></div>
-        <div class="grid-line"><div class="grid-dot top"></div><div class="grid-dot bottom"></div></div>
-        <div class="grid-line"><div class="grid-dot top"></div><div class="grid-dot bottom"></div></div>
-        <div class="grid-line story-progress-container">
-            <div class="grid-dot top"></div>
-            <div class="grid-dot bottom"></div>
-            <div class="story-dashes">
-                <div class="story-dash"><div class="story-dash-fill" id="dash-fill-1"></div></div>
-                <div class="story-dash"><div class="story-dash-fill" id="dash-fill-2"></div></div>
-                <div class="story-dash"><div class="story-dash-fill" id="dash-fill-3"></div></div>
-                <div class="story-dash"><div class="story-dash-fill" id="dash-fill-4"></div></div>
-                <div class="story-dash"><div class="story-dash-fill" id="dash-fill-5"></div></div>
-            </div>
-        </div>
+    <div class="story-progress" aria-hidden="true">
+        <div class="story-dash"><div class="story-dash-fill" id="dash-fill-1"></div></div>
+        <div class="story-dash"><div class="story-dash-fill" id="dash-fill-2"></div></div>
+        <div class="story-dash"><div class="story-dash-fill" id="dash-fill-3"></div></div>
+        <div class="story-dash"><div class="story-dash-fill" id="dash-fill-4"></div></div>
+        <div class="story-dash"><div class="story-dash-fill" id="dash-fill-5"></div></div>
     </div>
 
     <canvas id="webgl" role="img" aria-label="Handmade 22kt gold Kundan bird ring with rubies, emeralds and polki diamonds by Modi Creations, turning as you scroll"></canvas>
@@ -629,7 +605,7 @@
                 });
                 title.innerHTML = newHTML;
             });
-            document.getElementById('slide-1').classList.add('active');
+            if (!location.hash) document.getElementById('slide-1').classList.add('active');
         })();
     </script>
 
@@ -673,7 +649,15 @@
             'slide-5': { active: [0.555, 0.815], nav: 0.585 },
             'slide-4': { active: [0.885, 1.05],  nav: 0.95 }
         };
-        // one stories-style dash per chapter, in page order
+        // friendly #names used by the menu and by links such as modicreations.com/#visit
+        const CHAPTER_ALIASES = {
+            heritage: 'slide-1',
+            story: 'slide-2',
+            craft: 'slide-3',
+            collection: 'slide-5',
+            visit: 'slide-4'
+        };
+        // one stories-style dash per chapter, in page order (the menu items follow the same order)
         const STORY_SEGMENTS = [[0, 0.17], [0.17, 0.37], [0.37, 0.52], [0.52, 0.85], [0.85, 1.0]];
         const GALLERY_MOTION = [0.575, 0.80];
 
@@ -1103,20 +1087,6 @@
         }
 
         // ---------------------------------------------------------------
-        // Grid dots drift
-        // ---------------------------------------------------------------
-        function updateGridDots(scroll) {
-            dom.dots.forEach((dot, i) => {
-                const startY = (i * 17) % 80 + 10;
-                let speed = 90 + (i * 55) % 180;
-                if (i % 2 === 0) speed = -speed;
-                let y = startY + scroll * speed;
-                y = ((y % 100) + 100) % 100;
-                dot.style.top = `${y}%`;
-            });
-        }
-
-        // ---------------------------------------------------------------
         // Slides + stories progress
         // ---------------------------------------------------------------
         function smoothRange(a, b, v) {
@@ -1129,11 +1099,24 @@
             return scroll >= start && scroll <= end;
         }
 
+        let currentNav = -1;
+
         function updateSlides(scroll) {
             STORY_SEGMENTS.forEach(([start, end], i) => {
                 const progress = Math.max(0, Math.min(1, (scroll - start) / (end - start)));
                 dom.fills[i].style.height = `${progress * 100}%`;
             });
+
+            // light up the menu item of the chapter being scrolled through
+            const nav = STORY_SEGMENTS.findIndex(([, end], i) => scroll < end || i === STORY_SEGMENTS.length - 1);
+            if (nav !== currentNav) {
+                currentNav = nav;
+                dom.navLinks.forEach((link, i) => {
+                    link.classList.toggle('active', i === nav);
+                    if (i === nav) link.setAttribute('aria-current', 'true');
+                    else link.removeAttribute('aria-current');
+                });
+            }
 
             for (const id of Object.keys(CHAPTERS)) {
                 dom.slides[id].classList.toggle('active', isActive(scroll, id));
@@ -1240,7 +1223,7 @@
 
         function setupNavigation() {
             document.querySelectorAll('.nav-link, .contact-btn').forEach((link) => {
-                const id = link.getAttribute('href').slice(1);
+                const id = CHAPTER_ALIASES[link.getAttribute('href').slice(1)];
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     scrollToProgress(toPage(CHAPTERS[id].nav));
@@ -1368,7 +1351,6 @@
 
             updateSlides(story);
             updateGallery(story);
-            updateGridDots(story);
             renderer.render(scene, camera);
         }
 
@@ -1382,11 +1364,11 @@
             for (const id of Object.keys(CHAPTERS)) dom.slides[id] = document.getElementById(id);
             dom.slide2Img = document.getElementById('slide-2-img');
             dom.fills = STORY_SEGMENTS.map((_, i) => document.getElementById(`dash-fill-${i + 1}`));
-            dom.dots = document.querySelectorAll('.grid-dot');
             dom.gallery = document.querySelector('.gallery');
             dom.track = document.querySelector('.gallery-track');
             dom.cards = [...document.querySelectorAll('.gallery-card')];
             dom.images = dom.cards.map(card => card.querySelector('img'));
+            dom.navLinks = [...document.querySelectorAll('.nav-link')];
 
             document.body.style.minHeight = `${100 + STORY_SCROLL_VH * PAGE_LENGTH}vh`;
 
@@ -1435,14 +1417,29 @@
             window.addEventListener('load', measureGallery);
 
             onWindowResize();
+
+            if (openChapterFromHash('instant')) currentScroll = scrollProgressNow();
+            window.addEventListener('hashchange', () => openChapterFromHash('smooth'));
+
             animate();
             setupNavigation();
+        }
+
+        // A chapter link (e.g. an old /contact page sending visitors to /#visit) opens on that
+        // chapter instead of the top; the #name is then dropped so a reload starts at the top.
+        function openChapterFromHash(behavior) {
+            const id = CHAPTER_ALIASES[location.hash.slice(1)];
+            if (!id) return false;
+            pauseAutoplay();
+            scrollToProgress(toPage(CHAPTERS[id].nav), behavior);
+            history.replaceState(null, '', location.pathname + location.search);
+            return true;
         }
 
         // Always open at the top: the story only makes sense from its first chapter
         if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
         window.scrollTo(0, 0);
-        window.addEventListener('pageshow', () => window.scrollTo(0, 0));   // also after back/forward cache restores
+        window.addEventListener('pageshow', (e) => { if (e.persisted) window.scrollTo(0, 0); });   // also after back/forward cache restores
         window.addEventListener('beforeunload', () => window.scrollTo(0, 0));
 
         if (document.readyState === 'loading') {

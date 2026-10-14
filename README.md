@@ -35,6 +35,18 @@ GitHub Pages serves the `main` branch root at https://modicreations.com. DNS is 
 
 Google Search Console has a Domain property for modicreations.com (owner: ashumodi72@gmail.com), with `sitemap.xml` submitted.
 
+## Chapter links and old Wix pages
+
+Each chapter has a shareable link: `/#heritage`, `/#story`, `/#craft`, `/#collection` and `/#visit`. Opening one lands on that chapter; the `#` part is then dropped so a reload starts at the top.
+
+Old Wix addresses are small redirect pages that send visitors (and Google) to the matching chapter:
+
+| Old address | Goes to |
+| --- | --- |
+| `/contact`, `/contact-us` | `/#visit` |
+| `/about`, `/about-us` | `/#story` |
+| `/shop`, `/timeless-designs`, `/varamjewels`, `/product-page/comming-soon` | `/#collection` |
+
 ## Editing content
 
 - **Wording:** the chapters are the `.slide` blocks in `index.html`.
